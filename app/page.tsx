@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const name = 'Sarim Ansari';
+const siteBasePath = process.env.NODE_ENV === 'production' ? '/sarimansari.github.io' : '';
 const skills = [
   'Java',
   'Spring Boot',
@@ -136,7 +137,7 @@ export default function Home() {
               Senior Software Engineer with 8+ years of experience building scalable systems, now focused on GenAI and intelligent platforms.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }} className="flex flex-wrap gap-4">
-              <a href="/Profile.pdf" target="_blank" rel="noreferrer" className="rounded-full border border-[#cccccc]/50 px-5 py-3 text-sm font-medium text-[#cccccc] transition hover:-translate-y-0.5 hover:border-[#cccccc] hover:bg-[#cccccc]/10">
+              <a href={`${siteBasePath}/Profile.pdf`} target="_blank" rel="noreferrer" className="rounded-full border border-[#cccccc]/50 px-5 py-3 text-sm font-medium text-[#cccccc] transition hover:-translate-y-0.5 hover:border-[#cccccc] hover:bg-[#cccccc]/10">
                 Download Resume
               </a>
               <a href="#contact" className="rounded-full bg-[#cccccc] px-5 py-3 text-sm font-medium text-[#030303] transition hover:-translate-y-0.5">
