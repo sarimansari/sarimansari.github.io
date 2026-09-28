@@ -1,0 +1,152 @@
+---
+// Data lives in src/data/experience.json. `company` and `dates` are
+// required; `title`, `summary`, and `tech` are optional — entries render
+// cleanly without them rather than fabricating a role/description that
+// wasn't provided. Shape:
+//   { "company": "...", "dates": "...", "title"?: "...", "summary"?: "...", "tech"?: ["..."] }
+import IconTech from "./IconTech.astro";
+import experience from "../data/experience.json";
+---
+
+<section class="experience" id="experience">
+  <div class="experience__inner">
+    <p class="eyebrow" data-reveal>// 02 — where I've worked</p>
+    <h2 class="experience__heading" data-reveal>Where I've Worked</h2>
+
+    {experience.length === 0 ? (
+      <div class="experience__placeholder" data-reveal>
+        <p class="meta">[CONTENT NEEDED]</p>
+        <p>
+          Employment history isn't wired in yet — add entries to
+          <code>src/data/experience.json</code> and the timeline below builds
+          itself automatically.
+        </p>
+      </div>
+    ) : (
+      <ol class="timeline">
+        {experience.map((entry) => (
+          <li class="timeline__entry" data-reveal data-reveal-group="experience">
+            <div class="timeline__marker" aria-hidden="true"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <IconTech name={entry.company} kind="company" label={entry.company} />
+              </div>
+              <p class="meta timeline__dates">
+                {entry.dates}{entry.title ? ` · ${entry.title}` : ""}
+              </p>
+              {entry.summary && <p class="timeline__summary">{entry.summary}</p>}
+              {entry.tech?.length > 0 && (
+                <ul class="timeline__tags">
+                  {entry.tech.map((t) => (
+                    <li class="meta timeline__tag">{t}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </div>
+</section>
+
+<style>
+  .experience {
+    padding: var(--space-24) var(--space-6);
+  }
+
+  @media (min-width: 1024px) {
+    .experience {
+      padding: var(--space-40) var(--space-16);
+    }
+  }
+
+  .experience__inner {
+    max-width: var(--container-reading);
+    margin: 0 auto;
+  }
+
+  .experience__heading {
+    margin: var(--space-4) 0 var(--space-16);
+  }
+
+  .experience__placeholder {
+    border: 1px dashed var(--color-border);
+    padding: var(--space-8);
+    color: var(--color-text-muted);
+  }
+
+  .experience__placeholder p:first-child {
+    color: var(--color-warning);
+    margin-bottom: var(--space-2);
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  /* The vertical spine, offset to align with each marker's center */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--color-border);
+  }
+
+  .timeline__entry {
+    position: relative;
+    padding-left: var(--space-12);
+    padding-bottom: var(--space-12);
+  }
+
+  .timeline__entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline__marker {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-accent);
+  }
+
+  .timeline__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-3);
+  }
+
+  .timeline__dates {
+    margin-bottom: var(--space-4);
+  }
+
+  .timeline__summary {
+    margin-bottom: var(--space-4);
+  }
+
+  .timeline__tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .timeline__tag {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-3);
+    color: var(--color-text-muted);
+  }
+</style>

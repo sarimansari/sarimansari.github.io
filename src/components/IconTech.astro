@@ -1,0 +1,134 @@
+---
+// Real brand marks for technologies/companies that have one, self-hosted
+// under src/assets/logos/ rather than linked from a CDN at runtime.
+// Anything without an established public logo gets an honest fallback
+// instead of a fabricated brand mark: a generic node/bracket glyph for tech
+// concepts and protocols (kind="tech", the default), or a simple initials
+// monogram for companies (kind="company") — a company monogram reads as
+// "logo not available" rather than looking like a random unrelated icon
+// the way the tech glyph would next to a company name.
+//
+// Two source formats are supported: monochrome SVGs (Simple Icons, CC0),
+// recolored via currentColor so they match the site's grey palette; and
+// multi-color raster logos (PNG) for real-world brand marks that aren't
+// monochrome-friendly (e.g. Accolite's logo has its own orange/grey brand
+// colors) — these render as-is, inlined as a base64 data URI so no extra
+// public/ asset or network request is needed.
+import fs from "node:fs";
+import path from "node:path";
+
+interface Props {
+  name: string;
+  kind?: "tech" | "company";
+  /** When set, the logo becomes the accessible name (role="img" + aria-label)
+   * instead of being purely decorative — use this when no visible text
+   * elsewhere in the same element names the company/technology. */
+  label?: string;
+}
+
+const { name, kind = "tech", label } = Astro.props;
+const a11yAttrs = label ? { role: "img", "aria-label": label } : { "aria-hidden": "true" };
+
+const LOGO_MAP: Record<string, string> = {
+  Java: "java",
+  "Spring Boot": "spring",
+  "Spring AI": "spring",
+  Angular: "angular",
+  MongoDB: "mongodb",
+  Redis: "redis",
+  Snowflake: "snowflake",
+  Kafka: "apachekafka",
+  "Morgan Stanley": "morganstanley",
+  Infosys: "infosys",
+  Accolite: "accolite",
+};
+
+const logosDir = path.resolve("src/assets/logos");
+const slug = LOGO_MAP[name];
+let svg: string | null = null;
+let pngDataUri: string | null = null;
+
+if (slug) {
+  const svgPath = path.join(logosDir, `${slug}.svg`);
+  const pngPath = path.join(logosDir, `${slug}.png`);
+  if (fs.existsSync(svgPath)) {
+    svg = fs.readFileSync(svgPath, "utf-8").replace("<svg ", '<svg fill="currentColor" ');
+  } else if (fs.existsSync(pngPath)) {
+    const buf = fs.readFileSync(pngPath);
+    pngDataUri = `data:image/png;base64,${buf.toString("base64")}`;
+  }
+}
+
+// Generic tech fallback: a small node/bracket glyph for concepts and
+// protocols with no established brand logo (Microservices, REST, gRPC,
+// Agentic Architectures, RAG/FAISS, LLaMA 3, MCP).
+const FALLBACK_TECH_SVG =
+  '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="12" r="2.2" stroke="currentColor" stroke-width="1.4"/><circle cx="19" cy="6" r="2.2" stroke="currentColor" stroke-width="1.4"/><circle cx="19" cy="18" r="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M7 11l10-4M7 13l10 4" stroke="currentColor" stroke-width="1.4"/></svg>';
+
+const nameWords = name.split(" ");
+const initials = (
+  nameWords.length > 1 ? nameWords.map((w) => w[0]).join("") : name.slice(0, 2)
+)
+  .slice(0, 2)
+  .toUpperCase();
+
+const wrapperClass = kind === "company" ? "icon-tech icon-tech--company" : "icon-tech";
+---
+
+{svg ? (
+  <span class={wrapperClass} set:html={svg} {...a11yAttrs} />
+) : pngDataUri ? (
+  <span class={wrapperClass} {...a11yAttrs}>
+    <img src={pngDataUri} alt="" />
+  </span>
+) : kind === "company" ? (
+  <span class="icon-tech icon-tech--monogram" {...a11yAttrs}>{initials}</span>
+) : (
+  <span class={wrapperClass} set:html={FALLBACK_TECH_SVG} {...a11yAttrs} />
+)}
+
+<style>
+  .icon-tech {
+    display: inline-flex;
+    align-items: center;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+  }
+
+  .icon-tech :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Company logos are wordmarks (wide, not square) — size by height only
+     and let width follow the source aspect ratio. No max-width here: capping
+     width while height is fixed would squish the aspect ratio, and with no
+     sibling text next to it anymore there's nothing it needs to make room for. */
+  .icon-tech--company {
+    width: auto;
+    height: 32px;
+  }
+
+  .icon-tech--company :global(svg),
+  .icon-tech--company :global(img) {
+    width: auto;
+    height: 100%;
+  }
+
+  .icon-tech--monogram {
+    width: auto;
+    height: 20px;
+    min-width: 20px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0 3px;
+  }
+</style>

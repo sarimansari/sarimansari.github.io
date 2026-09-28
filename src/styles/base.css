@@ -1,0 +1,182 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 767px) {
+  body {
+    font-size: 1rem;
+  }
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+h1 {
+  font-size: clamp(2.75rem, 12vw, 9rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: clamp(4.5rem, 10vw, 9rem);
+  }
+}
+
+h2 {
+  font-size: clamp(1.75rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 1024px) {
+  h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+}
+
+h3 {
+  font-size: 1.375rem;
+  line-height: 1.1;
+}
+
+@media (min-width: 1024px) {
+  h3 {
+    font-size: 1.75rem;
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .eyebrow {
+    font-size: 0.8125rem;
+  }
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 1024px) {
+  .meta {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  z-index: 1000;
+  transition: top var(--duration-micro) var(--ease-entrance);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Reduced motion: content renders in its final state, no transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/*
+ * Scroll-reveal elements (data-reveal, used by initScrollReveals in
+ * motion.js) only start hidden once JS has confirmed it can reveal them —
+ * html.js is set synchronously in BaseLayout's <head>, before paint. This
+ * keeps the site fully readable with JavaScript disabled, matching Rule 6
+ * (usable without animation) rather than depending on JS to ever run.
+ */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+html.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

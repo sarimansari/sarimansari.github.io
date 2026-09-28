@@ -1,0 +1,21 @@
+---
+// Fixed, static film-grain overlay. No PNG asset needed — an inline SVG
+// feTurbulence filter tiles cheaply and needs no network request.
+// Static (not animated) per Section 8: keeps GPU cost near zero and avoids
+// a motion-sensitivity concern that an animated grain would introduce.
+---
+
+<div class="grain" aria-hidden="true"></div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-grain);
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+</style>

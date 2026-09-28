@@ -1,0 +1,63 @@
+:root {
+  /* Color */
+  --color-bg: #0b0c0e;
+  --color-surface: #16181b;
+  --color-surface-raised: #1e2124;
+  --color-text: #f3f1ec;
+  --color-text-muted: #9a9c9f;
+  --color-accent: #b0b4ba;
+  --color-accent-secondary: #6e8ca0;
+  --color-border: #2a2d31;
+  --color-success: #6fcf97;
+  --color-warning: #e0b341;
+  --color-error: #e0645a;
+
+  /* Typography */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+  /* Spacing (base unit 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --space-40: 160px;
+
+  /* Radius */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+
+  /* Shadows */
+  --glow-accent: 0 0 24px rgba(176, 180, 186, 0.25);
+
+  /* Transitions */
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-section: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-micro: 150ms;
+  --duration-component: 550ms;
+  --duration-section: 1100ms;
+
+  /* Z-index */
+  --z-base: 0;
+  --z-content: 10;
+  --z-nav: 100;
+  --z-grain: 200;
+  --z-progress: 300;
+
+  /* Breakpoints (reference values; used directly in media queries) */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  /* Container widths */
+  --container-max: 1200px;
+  --container-reading: 760px;
+}
