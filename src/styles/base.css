@@ -8,6 +8,20 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Site-wide: no text/image selection or drag-out, per direct instruction.
+   Note this also blocks selecting the Contact email to copy it manually —
+   the mailto: link still works fine, visitors just can't select the raw text. */
+html {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
 html,
 body {
   margin: 0;
@@ -85,21 +99,6 @@ h3 {
 @media (min-width: 1024px) {
   h3 {
     font-size: 1.75rem;
-  }
-}
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-@media (min-width: 1024px) {
-  .eyebrow {
-    font-size: 0.8125rem;
   }
 }
 

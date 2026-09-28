@@ -4,18 +4,15 @@ import site from "../data/site.json";
 
 <section class="contact" id="contact">
   <div class="contact__inner">
-    <p class="eyebrow" data-reveal>// 03 — contact</p>
-
     <div class="contact__text" data-reveal>
       <h2 class="contact__heading">Let's talk.</h2>
 
-      {site.email ? (
-        <a href={`mailto:${site.email}`} class="contact__email">{site.email}</a>
-      ) : (
+      {!site.email && (
         <p class="contact__needed meta">[CONTENT NEEDED — add a contact email to src/data/site.json]</p>
       )}
 
       <div class="contact__links">
+        {site.email && <a href={`mailto:${site.email}`} class="contact__link">Email</a>}
         <a href={site.github} target="_blank" rel="noreferrer" class="contact__link">GitHub ↗</a>
         <a href={site.linkedin} target="_blank" rel="noreferrer" class="contact__link">LinkedIn ↗</a>
       </div>
@@ -37,26 +34,17 @@ import site from "../data/site.json";
   }
 
   .contact__inner {
+    /* Centered in the viewport, consistently with every other section (see
+       Hero.astro for the full rationale). */
     max-width: var(--container-max);
     margin: 0 auto;
   }
 
   .contact__text {
-    margin-top: var(--space-8);
     max-width: var(--container-reading);
   }
 
   .contact__heading {
-    margin-bottom: var(--space-8);
-  }
-
-  .contact__email {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 6px;
     margin-bottom: var(--space-8);
   }
 

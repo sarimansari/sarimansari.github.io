@@ -104,7 +104,7 @@ A SaaS marketing site, a generic "hire me" template, an AI-generated gradient-bl
 
 **Contrast.** High contrast for headlines and primary content (WCAG AA minimum, targeting AAA for body text where feasible), lower contrast for muted/metadata text — contrast itself becomes a hierarchy tool.
 
-**Visual rhythm.** Every major section opens with a small monospace eyebrow label (e.g., `// 01 — selected work`), a pattern borrowed from code comments, reinforced consistently to build rhythm and orientation as the user scrolls.
+**Visual rhythm — eyebrow labels removed.** Sections originally opened with a small monospace `// 0N — section` label (a pattern borrowed from code comments). Removed sitewide per direct instruction (Section 5) — sections now open straight with their heading; rhythm/orientation comes from consistent heading treatment and spacing instead.
 
 Why this direction: it's chosen specifically to avoid the "dark hero + floating card" default called out as off-limits, while staying buildable by one engineer — the craft comes from typography, spacing, and grain discipline rather than heavy effects.
 
@@ -112,23 +112,27 @@ Why this direction: it's chosen specifically to avoid the "dark hero + floating 
 
 ## 5. Website Structure
 
-**Revised after hands-on implementation feedback** — Projects and Footer have both been cut, and the avatar moved into Hero. The site is now four sections, no footer:
+**Revised repeatedly after hands-on implementation feedback.** Projects, Footer, and Nav/header have all been cut, and the site's eyebrow-label pattern (`// 0N — section`) has been removed sitewide. The avatar moved into Hero, and Hero's tagline/bio were later split out into their own "About" section once Hero started feeling cluttered carrying identity + narrative + avatar all at once. The site is now five sections, no header/nav, no footer:
 
-1. **Hero** — identity (first name only, not full name) + an animated multi-language greeting + waving-hand emoji + the animated avatar. No CTA links (View work / GitHub were removed).
-2. **Skills** — capability groups, not a badge wall (Section 17); Frontend merged into Backend & Systems, Tooling & Practices dropped, and every individual technology tag now carries a small logo (real brand mark where one exists, a generic glyph otherwise).
-3. **Where I've Worked** — a visual vertical timeline, not a plain list (pending content, Section 16).
-4. **Contact** — direct, low-friction (email + links). No longer carries the avatar (moved to Hero) or a footer beneath it — Contact is the last thing on the page.
+1. **Hero** — identity only: first name (as "Hi, I'm Sarim"), an animated multi-language greeting, waving-hand emoji, subtitle + location, and the avatar. No CTA links (View work / GitHub were removed), no scroll cue (removed), no tagline/bio (moved to About).
+2. **About** — the tagline and bio that used to live in Hero, now their own section so Hero stays lean. Plain `<h2>About</h2>` heading, no eyebrow (see below).
+3. **Skills** — capability groups, not a badge wall (Section 17); Frontend merged into Backend & Systems, Tooling & Practices dropped, and every individual technology tag now carries a small logo (real brand mark where one exists, a generic glyph otherwise) — all rendered monochrome via `currentColor`/`mask-image`, including the one PNG-sourced logo, so nothing stands out in its own brand colors (Section 16 has the detail).
+4. **Where I've Worked** — a visual vertical timeline, not a plain list (pending role/summary content, Section 16).
+5. **Contact** — direct, low-friction (email + links). No longer carries the avatar (moved to Hero) or a footer beneath it — Contact is the last thing on the page.
 
-Projects (the 4 GitHub case studies), the Footer, the extended positioning statement, "Engineering Philosophy," and a separate "About" section have all been cut through iteration — the one-line positioning statement lives inside Hero (Section 6). No preloader.
+Projects (the 4 GitHub case studies), the Footer, Nav, the extended positioning statement, and "Engineering Philosophy" have all been cut through iteration.
+
+**Eyebrow labels removed sitewide.** Every section originally opened with a small monospace `// 0N — section name` line above its heading (a recurring stylistic device, Section 14). Removed entirely per direct instruction — sections now open straight with their `<h2>`. The `.eyebrow` CSS class was unused after this and was deleted from `base.css`.
 
 Each section below specifies purpose, the visitor's implicit question, content, visual treatment, interaction, animation, and the transition into the next section.
 
 | # | Section | Visitor's question | Transition out |
 |---|---|---|---|
-| 1 | Hero | "Who is this and what do they do?" | Type scales down, eyebrow label for Skills fades in |
-| 2 | Skills | "What exactly can they do?" | Groups settle, timeline eyebrow appears |
-| 3 | Where I've Worked | "What's the career trajectory?" | Timeline ends, contact CTA begins entrance |
-| 4 | Contact | "How do I reach them?" | — end of experience, no footer beneath it |
+| 1 | Hero | "Who is this and what do they do?" | Content fades, About settles in below |
+| 2 | About | "What do they actually do, in their own words?" | Tagline/bio settle, Skills heading appears |
+| 3 | Skills | "What exactly can they do?" | Groups settle, timeline appears |
+| 4 | Where I've Worked | "What's the career trajectory?" | Timeline ends, contact CTA begins entrance |
+| 5 | Contact | "How do I reach them?" | — end of experience, no footer beneath it |
 
 ---
 
@@ -136,35 +140,45 @@ Each section below specifies purpose, the visitor's implicit question, content, 
 
 **Revised.** The hero now leads with a first name, a rotating multi-language greeting, and the animated avatar, and drops its two CTA links entirely.
 
-**Content hierarchy (top to bottom):**
+**Content hierarchy (top to bottom) — trimmed down after the tagline/bio moved out to About and the scroll cue was removed:**
 1. Waving-hand emoji (👋, animates on load, 3 cycles, then settles) + a rotating greeting word cycling through 5 languages — English, French, Spanish, German, Arabic ("Hello" / "Bonjour" / "Hola" / "Hallo" / "مرحباً") on a continuous loop, one word visible at a time.
-2. Massive display headline: **first name only** ("Sarim", not the full "Sarim Ansari" — Fraunces, largest type on the page).
-3. Techy subtitle line directly under the name (unchanged): "Senior Software Engineer — Agentic AI & Distributed Systems."
-4. One-sentence positioning line (the "one-line positioning" from Section 2).
-5. The animated avatar (Section 27), placed beside the text content in a two-column layout on desktop (text left, avatar right), stacked on mobile.
-6. A small scroll cue at the bottom edge.
+2. Massive display headline: **"Hi, I'm Sarim"** (word-staggered, Fraunces, largest type on the page) — not the bare first name from an earlier draft, and not the full "Sarim Ansari."
+3. Subtitle line (JetBrains Mono): "Software Engineer — Agentic AI & Distributed Systems · Mumbai, India" — role and location combined on one line, dropped "Senior" from the title per the updated copy.
+4. The animated avatar (Section 27), placed beside the text content in a two-column layout on desktop (text left, avatar right), stacked on mobile.
 
-The "View work ↓" / "GitHub ↗" text links from the original draft have been **removed** — the hero is identity-only now, with GitHub/LinkedIn access left to the Contact section.
+Removed from Hero along the way: the "View work ↓" / "GitHub ↗" CTA links (GitHub/LinkedIn access lives in Contact instead), the punchy tagline and extended bio (moved to their own About section, below — Hero carrying identity + full narrative + avatar all at once started feeling cluttered), and the scroll cue (small vertical line + "scroll" label at the bottom edge — removed outright, not moved).
 
-**Headline strategy.** The first name is the headline — even more minimal than the original full-name treatment, reads as more personal/direct.
+**Headline strategy.** The first name is the headline — even more minimal than a full-name treatment, reads as more personal/direct.
 
 **Multi-language rotator.** Pure CSS keyframe animation (5 stacked spans, each visible for a ~20% slot of a 10s loop) — no JS interval needed, so it degrades gracefully. The Arabic word carries `lang="ar" dir="rtl"` for correct semantics. Under `prefers-reduced-motion`, the rotation stops and only "Hello" (English) stays visible — a looping, involuntary animation is exactly the kind of motion the reduced-motion contract exists to remove.
 
 **Waving hand.** CSS `@keyframes` rotation (0° → 14° → -8° → 14° → -4° → 10° → 0°), 3 iterations on load then stops — deliberately not an infinite loop, matching the "restrained and premium" motion brief. Static (no animation) under reduced-motion.
 
-**Navigation.** Fixed minimal nav bar (confirmed choice) — logo mark (monogram "SA" in monospace) on the left, text links on the right matching the current sections (Skills, Experience, Contact — no longer Projects), background transitions from transparent to `surface` color with a hairline bottom border once scrolled past the hero.
+**Navigation — removed.** The fixed nav bar (monogram + section links, `Nav.astro`) originally specified here has been removed entirely per direct instruction — there is no header/nav chrome anywhere on the page now. Section `id`s (`#top`, `#about`, `#skills`, `#experience`, `#contact`) remain in the markup, so direct/deep links still work; there's just no visible in-page menu to click them from anymore.
 
-**Typography scale (desktop):** Name at `clamp(4.5rem, 10vw, 9rem)`, subtitle at `clamp(1.1rem, 2vw, 1.5rem)` in JetBrains Mono, positioning line at `clamp(1.25rem, 2.5vw, 1.75rem)` in Inter.
+**Typography scale (desktop):** Headline at `clamp(4.5rem, 10vw, 9rem)`, subtitle at `clamp(1.1rem, 2vw, 1.5rem)` in JetBrains Mono.
 
-**Motion.** On load: greeting/wave fades up first, name characters split and rise with a short stagger, subtitle and positioning line follow, scroll cue last. Total entrance sequence ≤ 1.4s.
+**Motion.** On load: greeting/wave fades up first, headline words split and rise with a short stagger, subtitle follows. Total entrance sequence ≤ 1s — shorter than earlier drafts now that it's not also sequencing a tagline, bio, and scroll cue.
 
 **Cursor interaction.** None (confirmed choice — standard cursor).
 
 **Background treatment.** Solid near-black background with the fixed grain overlay and an extremely subtle radial vignette — no gradient blobs, no animated background.
 
-**Scroll cue.** A single thin vertical line with a small dot that gently travels down and fades, paired with the word `scroll` in monospace, bottom-center.
+**Scroll cue — removed.** Originally a thin vertical line + "scroll" label at the bottom edge; removed per direct instruction, not replaced.
 
-**Transition into Skills:** as the hero scrolls out of view, the content's opacity/scale eases down (not a hard cut) while the Skills section's eyebrow label and first capability group ease in — reads as a single continuous camera move.
+**Transition into About:** as the hero scrolls out of view, the content's opacity/scale eases down (not a hard cut) while the About section's heading and tagline ease in via the generic scroll-reveal system (Section 10) — reads as a continuous scroll, not two sections stitched together.
+
+---
+
+## 6a. About Section (new)
+
+Not in the original plan — split out of Hero once Hero started carrying too much (identity, full narrative, and the avatar all at once felt cluttered). Sits second in page order, right after Hero.
+
+**Content:** A plain `<h2>About</h2>` heading (no eyebrow — see Section 5's sitewide eyebrow removal), then the punchy tagline ("Crafting AI-powered platforms that think, scale, and evolve.", Fraunces italic, same treatment the tagline had in Hero) and the extended bio ("Senior Software Engineer with 8+ years of experience building scalable systems, now focused on GenAI and intelligent platforms.", Inter, muted).
+
+**Motion.** Unlike Hero, this uses the generic `data-reveal` scroll-reveal system (Section 10) shared with Skills/Where I've Worked/Contact, not a bespoke entrance timeline — it's a standalone section now, not part of the above-the-fold hero sequence.
+
+**Layout.** Same centered `container-max` (1200px) block as every other section (Section 8/23).
 
 ---
 
@@ -184,7 +198,7 @@ The "View work ↓" / "GitHub ↗" text links from the original draft have been 
 | `--color-surface` | `#16181B` | Section backgrounds that need slight separation |
 | `--color-surface-raised` | `#1E2124` | Hover/active surface state, code panels |
 | `--color-text` | `#F3F1EC` | Primary text (warm off-white, not pure white) |
-| `--color-text-muted` | `#9A9C9F` | Secondary/metadata text, eyebrow labels |
+| `--color-text-muted` | `#9A9C9F` | Secondary/metadata text |
 | `--color-accent` | `#B0B4BA` | Primary accent — links, active states, mailto/CTA text. **Changed from the original amber (`#D4A24C`) to a cool grey** per direct feedback — reads even more restrained/monochrome, at the cost of standing out slightly less against `--color-text-muted` (`#9A9C9F`); contrast against the near-black background is still very high either way. |
 | `--color-accent-secondary` | `#6E8CA0` | Secondary accent — reserved for any future code/diagram highlight use; not currently used anywhere live (the diagrams that used it were removed with Projects) |
 | `--color-border` | `#2A2D31` | Hairline dividers |
@@ -241,7 +255,7 @@ Base unit: `4px`. Scale: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 160.
 
 **Secondary (body/UI) font:** Inter — used for body copy, navigation, buttons, form fields. Chosen for its exceptional legibility at small sizes and full weight range.
 
-**Monospace font:** JetBrains Mono — used for eyebrow labels, metadata, code snippets, nav numbering, and technical annotations throughout. This is a deliberate brand element, not just a code-block font — it's the visual signal of "engineer."
+**Monospace font:** JetBrains Mono — used for metadata, code-style labels, and technical annotations throughout. This is a deliberate brand element, not just a code-block font — it's the visual signal of "engineer."
 
 **Fallback stack:** `Fraunces, Georgia, serif` / `Inter, -apple-system, "Segoe UI", sans-serif` / `"JetBrains Mono", "SF Mono", Consolas, monospace`.
 
@@ -253,7 +267,7 @@ Base unit: `4px`. Scale: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 160.
 | Section headline (H2) | Fraunces | `clamp(2.5rem,5vw,4rem)` | `clamp(1.75rem,6vw,2.25rem)` | 500 | 1.0 | -0.01em |
 | Case-study title (H3) | Fraunces | `1.75rem` | `1.375rem` | 500 | 1.1 | normal |
 | Body / paragraph | Inter | `1.125rem` | `1rem` | 400 | 1.6 | normal |
-| Hero positioning line | Fraunces | `clamp(1.5rem,3vw,2rem)` | `1.25rem` | 400 italic | 1.4 | normal |
+| Hero tagline | Fraunces | `clamp(1.5rem,3vw,2rem)` | `1.25rem` | 400 italic | 1.4 | normal |
 | Eyebrow label | JetBrains Mono | `0.8125rem` | `0.75rem` | 500 | 1.0 | 0.08em, uppercase |
 | Metadata / caption | JetBrains Mono | `0.8125rem` | `0.75rem` | 400 | 1.4 | 0.02em |
 | Nav links | Inter | `0.9375rem` | n/a (menu) | 500 | 1.0 | normal |
@@ -302,9 +316,7 @@ Link underline reveals, button color shifts, mailto "copy" confirmation, scroll-
 
 | Element | Trigger | Response | Feedback | Purpose |
 |---|---|---|---|---|
-| Nav links | Click | Smooth scroll to section | Active section underlines in nav | Orientation while scrolling a long page |
-| "GitHub ↗" / "LinkedIn ↗" links (Contact) | Click | Opens in new tab | Standard external-link affordance | Never navigate the visitor away from the portfolio unexpectedly |
-| Nav bar | Scroll past hero | Background fades in with blur | Smooth 300ms transition | Keeps nav available without competing with the hero |
+| "Email" / "GitHub ↗" / "LinkedIn ↗" links (Contact) | Click | Opens mail client / new tab | Standard link affordance | Never navigate the visitor away from the portfolio unexpectedly |
 | Mailto link | Click | Opens mail client | Standard mailto affordance | Removes friction for visitors who don't use a local mail client — the "copy email" affordance from the original draft was never built; not currently planned |
 | Skills group | Hover | Group's items brighten from muted to full text color | Immediate, no delay | Signals grouping/categorization without extra chrome |
 | Scroll cue (hero) | Scroll | Fades out | — | Gets out of the way once its job is done |
@@ -345,7 +357,7 @@ No cursor-following, magnetic, or drag interactions — deliberately excluded gi
 
 Mobile is not a shrunk desktop layout — it's designed as its own experience with the same visual language.
 
-**Mobile navigation.** Fixed nav bar collapses to: monogram left, a single menu icon right. Tapping opens a simple full-height list (not a fullscreen "experimental" takeover, consistent with the "fixed minimal nav" decision) with large tap targets (min 48px height per item).
+**Mobile navigation.** N/A — no nav bar exists at any breakpoint (removed, Section 6).
 
 **Hero adaptation.** Name drops to `clamp(2.75rem,12vw,3.5rem)`; subtitle and positioning line stack tightly beneath; the two hero links stack vertically instead of side-by-side; scroll cue remains but shrinks.
 
@@ -367,7 +379,7 @@ Mobile is not a shrunk desktop layout — it's designed as its own experience wi
 
 **Image behavior.** The animated avatar (Contact section) serves a smaller/optimized asset variant on mobile and pauses any looping animation when off-screen (`IntersectionObserver`) to save battery/CPU.
 
-**Sticky elements.** Only the nav bar and the top scroll-progress bar are sticky/fixed — nothing else, at any breakpoint.
+**Sticky elements.** Only the top scroll-progress bar is sticky/fixed — nothing else, at any breakpoint (the nav bar this originally referred to was removed, Section 6).
 
 **Accessibility considerations.** Tap targets ≥48×48px; no functionality that requires hover to discover; text reflows without horizontal scrolling at all supported widths down to 320px.
 
@@ -417,7 +429,9 @@ On the live site this section is labeled **"Where I've Worked"** and sits third 
 
 `title` and `summary` (role/what-changed-technically) were not provided and are **`[CONTENT NEEDED]`** — the fields are optional in the schema and simply don't render when absent, rather than fabricating a title or description. Add them any time and each entry picks them up automatically.
 
-**Presentation (built).** A vertical timeline: a thin spine line down the left edge with a small accent-colored circular marker per entry; each entry shows a real company logo + company name, then dates (and title, if present), then an optional summary and technology tag row. All three logos are real, sourced from official brand assets rather than Simple Icons (which doesn't cover any of the three): Morgan Stanley's current wordmark and Infosys's mark from Wikimedia Commons (both monochrome SVGs, recolored via `currentColor` to match the site palette); Accolite's from an archived (Wayback Machine) snapshot of accolite.com from its Feb 2020–Sep 2022 employment window — accolite.com now redirects to bounteous.com since Accolite was absorbed into Bounteous, so no *current* Accolite-branded asset exists, but the period-accurate logo does. Accolite's is a multi-color raster (PNG, base64-inlined) rather than a recolorable SVG, so it renders in its own brand colors rather than the site's grey — a deliberate exception given the source format, not an inconsistency to "fix." If a company has neither, `IconTech kind="company"` falls back to a 2-letter initials monogram rather than a fabricated logo — not currently needed for any of these three. Driven entirely by `src/data/experience.json`:
+**Presentation (built).** A vertical timeline: a thin spine line down the left edge with a small accent-colored circular marker per entry; each entry shows **only the company logo** — no visible company name, dates, or title (both removed per direct feedback; the logo alone is the entry). That information isn't lost, just moved off-screen: since the logo is the only content in the entry (nothing else names the company for a screen reader), it carries an `aria-label` combining company + dates + title (e.g. `"Morgan Stanley — Sep 2022 – Present"`), making the logo the entry's accessible name via `role="img"`. An optional summary/tech-tag row can still render below the logo when `summary`/`tech` are present in the data (none currently are).
+
+All three logos are real, sourced from official brand assets rather than Simple Icons (which doesn't cover any of the three): Morgan Stanley's current wordmark and Infosys's mark from Wikimedia Commons; Accolite's from an archived (Wayback Machine) snapshot of accolite.com from its Feb 2020–Sep 2022 employment window — accolite.com now redirects to bounteous.com since Accolite was absorbed into Bounteous, so no *current* Accolite-branded asset exists, but the period-accurate logo does. **All three render fully monochrome now**, matching each other exactly: the two SVGs get `fill="currentColor"` injected directly; Accolite's source is a multi-color PNG (its own orange/grey brand colors) with no clean SVG equivalent, so rather than showing it in its original colors (which stood out next to the other two), it's rendered as a `mask-image` over a `background-color: currentColor` element — this uses only the PNG's alpha/shape and discards its raster colors entirely, producing the same grey silhouette treatment as the SVGs (`IconTech.astro`'s `.icon-tech--masked` class). If a company has neither an SVG nor a PNG, `IconTech kind="company"` falls back to a 2-letter initials monogram rather than a fabricated logo — not currently needed for any of these three. Driven entirely by `src/data/experience.json`:
 ```json
 { "company": "...", "dates": "...", "title"?: "...", "summary"?: "...", "tech"?: ["..."] }
 ```
@@ -468,14 +482,14 @@ Each group renders as a short text block (group name in Fraunces, one-line state
 /
 ├── public/
 │   ├── favicon.svg
+│   ├── og-image.png
 │   └── robots.txt
 ├── src/
 │   ├── layouts/
-│   │   └── BaseLayout.astro    (html shell, meta tags, grain overlay, nav — no footer)
+│   │   └── BaseLayout.astro    (html shell, meta tags, grain overlay — no nav/header, no footer)
 │   ├── pages/
 │   │   └── index.astro         (Hero, Skills, WhereIveWorked, Contact — in that order)
 │   ├── components/
-│   │   ├── Nav.astro
 │   │   ├── Hero.astro          (includes the greeting rotator, waving hand, and avatar slot)
 │   │   ├── Skills.astro
 │   │   ├── WhereIveWorked.astro (renders the timeline, or the [CONTENT NEEDED] empty state)
@@ -484,16 +498,16 @@ Each group renders as a short text block (group name in Fraunces, one-line state
 │   │   ├── ScrollProgress.astro
 │   │   └── GrainOverlay.astro
 │   ├── data/
-│   │   ├── site.json           (name, subtitle, positioning, email, github, linkedin, availability)
-│   │   └── experience.json     (Where I've Worked entries — starts empty, see Section 16)
+│   │   ├── site.json           (name, subtitle, location, tagline, bio, email, github, linkedin, availability)
+│   │   └── experience.json     (Where I've Worked entries — company + dates ready, title/summary still gaps, see Section 16)
 │   ├── scripts/
 │   │   └── motion.js           (GSAP entrance + ScrollTrigger setup, respects prefers-reduced-motion)
 │   ├── styles/
 │   │   ├── tokens.css          (all design tokens from Section 8/9/24 as CSS variables)
-│   │   └── base.css            (resets, typography defaults, no-JS/reduced-motion fallback rules)
+│   │   └── base.css            (resets, typography defaults, site-wide user-select:none, no-JS/reduced-motion fallback rules)
 │   └── assets/
-│       ├── logos/              (self-hosted Simple Icons SVGs: java, spring, apachekafka, angular, mongodb, redis, snowflake)
-│       └── avatar/             (animated 3D avatar media, from Higgsfield — pending, see Section 27)
+│       ├── logos/              (self-hosted brand marks: java, spring, apachekafka, angular, mongodb, redis, snowflake, morganstanley, infosys — mostly Simple Icons SVGs; accolite is a PNG, see Section 16)
+│       └── avatar/              (sarim-source2.png — real photo, background-removed cutout, see Section 27; not an AI-generated character)
 ├── astro.config.mjs
 ├── tsconfig.json
 ├── package.json
@@ -542,7 +556,7 @@ Each group renders as a short text block (group name in Fraunces, one-line state
 
 ## 21. Accessibility
 
-**Semantic HTML:** Proper landmark elements (`<header>`, `<nav>`, `<main>`, `<section>` per content block with `aria-label`s — no `<footer>`, since that section was removed) — the eyebrow labels use real heading levels underneath their styling (`<h2>` etc.), not styled `<div>`s.
+**Semantic HTML:** Proper landmark elements (`<main>`, `<section>` per content block with `aria-label`s — no `<header>`/`<nav>` or `<footer>`, since both were removed) — real heading levels (`<h2>` etc.) throughout, not styled `<div>`s.
 
 **Keyboard navigation:** All interactive elements (nav links, case-study expand triggers, mailto copy button) are real `<a>`/`<button>` elements, fully tabbable in logical document order; no keyboard traps in any expand/collapse interaction.
 
@@ -656,8 +670,7 @@ Breakpoints (from Section 8/13): `480px`, `768px`, `1024px`, `1440px`.
 
 | Component | Purpose | Variants | Data | Interaction | Animation | Responsive behavior |
 |---|---|---|---|---|---|---|
-| `Nav` | Fixed site navigation | transparent / scrolled | nav link list | click → smooth scroll; active-section highlight | background/blur fade on scroll | collapses to menu icon < 1024px |
-| `Hero` | Identity statement + avatar | — | first name, subtitle, positioning line, 5-language greeting rotator, avatar media | none (CTA links removed) | greeting fade-in, wave (3 cycles), word-stagger name entrance, scroll-recede | avatar stacks below text < 1024px |
+| `Hero` | Identity statement + avatar | — | greeting/name/subtitle/location/tagline/bio, 5-language greeting rotator, avatar media | none (CTA links removed) | greeting fade-in, wave (3 cycles), word-stagger name entrance, scroll-recede | avatar stacks below text < 1024px |
 | `Skills` | Capability groups | — | 3 groups (Section 17), each tag rendering via `IconTech` | hover brightens group | fade + rise, staggered per group | groups stack single-column < 768px |
 | `IconTech` | Per-technology logo | real logo / generic fallback | technology name → logo lookup | — (decorative, `aria-hidden`) | none | — |
 | `WhereIveWorked` | Career timeline | timeline / `[CONTENT NEEDED]` empty state | `experience.json` entries | — | staggered entrance per entry | spine + markers remain single-column at all sizes (already narrow) |
@@ -665,7 +678,7 @@ Breakpoints (from Section 8/13): `480px`, `768px`, `1024px`, `1440px`.
 | `ScrollProgress` | Top progress bar | — | — | — | width tracks scroll position (disabled under reduced-motion) | present at all sizes |
 | `GrainOverlay` | Fixed texture layer | — | — | — | static (no animation) | present at all sizes, `aria-hidden` |
 
-`CaseStudyRow`, `Diagram`, `Projects`, and `Footer` from the original plan have been removed along with their sections (Section 5/15/7). No speculative `Marquee`, `MagneticButton`, or custom `Cursor` components — none of those were selected in the interaction/tone decisions above.
+`CaseStudyRow`, `Diagram`, `Projects`, `Footer`, and `Nav` from the original plan have all been removed along with their sections (Section 5/15/7/6) — the page now has no header/nav chrome and no footer, content sections only. No speculative `Marquee`, `MagneticButton`, or custom `Cursor` components — none of those were selected in the interaction/tone decisions above.
 
 ---
 
@@ -715,17 +728,23 @@ No WebGL, no Three.js, no Framer Motion/Motion — a single, focused animation d
 
 **Favicons:** Generated from the "SA" monogram (JetBrains Mono, set in `--color-accent` on transparent/`--color-bg`), exported as `favicon.svg` plus standard PNG fallbacks.
 
-**Social preview image:** A generated 1200×630 OG card using the hero typographic treatment — produced once the hero design is finalized in implementation (Phase 4), not before.
+**Social preview image:** Built (Section 29/Phase 11) — `public/og-image.png`, 1200×630. Uses system-font substitutes (Georgia, Courier New) for the brand fonts (Fraunces, JetBrains Mono) rather than the hero's exact typographic treatment, since server-side image generation in this environment doesn't have access to those web fonts. Close enough to on-brand for a link-preview thumbnail; revisit with the real fonts if a browser-based screenshot/render path becomes available.
 
 **Background textures:** A single tileable grain PNG (Section 8), generated once and reused as the fixed overlay.
 
-### The animated avatar — status and plan
+### The avatar — status: shipped, real photo instead of an AI character
 
-You asked me to use the Higgsfield tools to turn your photo into an animated, techy 3D character (glasses + hoodie). It has moved twice since: originally planned for a standalone "About" section (cut), then Contact, and — per the latest direct feedback — it now lives in **Hero**, beside the name/greeting/positioning text. `Hero.astro` currently renders a placeholder box (`[avatar pending]`) in that slot. I opened a Higgsfield media-upload widget for your photo, but never received confirmation the upload completed. Once it has, the plan is:
+The original ask was to use Higgsfield to turn a photo into an animated, techy 3D character (glasses + hoodie). That pipeline hit a real wall: the connected Higgsfield workspace has **no free credits and no one-time credit top-up** — only paid monthly/annual subscriptions ($39–129), for what would have been a ~2-credit generation. Rather than commit to a subscription for one image, the decision (per direct instruction) was to use the real uploaded photo instead of an AI-illustrated character.
 
-1. **Stylize:** generate a 3D-character-styled image from your photo (glasses + hoodie, matching this site's near-black/grey palette so it doesn't clash visually with the rest of the page — updated from the original amber palette description to match the current accent color, Section 8).
-2. **Animate:** turn that stylized image into a short looping animation (subtle idle motion — not a talking/lip-synced clip, to match the "restrained and premium" brief) sized appropriately for the Hero's avatar slot.
-3. **Optimize:** export a compressed, muted, loop-ready video (or Lottie/GIF fallback) for web delivery per the performance rules in Section 20 and the play/pause-offscreen behavior in Section 13/26.
+**What's built:** `Hero.astro` renders the actual photo (`src/assets/avatar/sarim-source2.png`, optimized to WebP via Astro's `<Image>`), styled with two layered effects:
+1. An SVG duotone filter (`#hero-duotone`, defined inline in `Hero.astro`) — remaps shadows to near-black (`--color-bg`) and highlights to the accent grey (`--color-accent`). This was removed for a stretch in favor of the photo's natural color, then reinstated per direct instruction — reinstating it turned out to also fix a problem the natural-color version had: the source photo's studio lighting blew out the highlights on his face into an unnatural "glow," and duotone's 2-color luminance clamp eliminates that as a side effect (a brightness/contrast filter had been used to patch the glow in the interim; removed since duotone makes it redundant).
+2. A `mask-image` radial gradient on `.hero__avatar-image` feathering the cutout's own alpha — a gradual dissolve into `--color-bg` rather than a hard cutout edge, tuned through several iterations per direct feedback. Issues fixed along the way: a `circle` shape (corner-relative by default) never fully faded at the box's straight edges, worst at the bottom, fixed by sizing to the sides instead; a shape symmetric top-to-bottom faded the hair as aggressively as the bottom, fixed with a deliberately asymmetric ellipse — oversized and centered above the box, so the top edge sits inside the fully-opaque inner stop (hair stays intact) while the bottom edge lands past the outer stop; and that fix then faded the bottom too gradually, erasing most of the hoodie, fixed by narrowing the fade band (inner 45%, outer 75%) so the hoodie stays visible with only a short, late fade right at the edge. Sides stay symmetric throughout.
+
+The source image itself is a background-removed cutout with real alpha transparency (replacing an earlier flat-studio-backdrop version, `sarim-source.jpg`, which needed a CSS radial-gradient vignette to fake the same blend — dropped once the cutout image made it unnecessary).
+
+The photo already has him in a dark hoodie, so half of the original "glasses + hoodie" brief is satisfied incidentally; no glasses.
+
+**If the AI-generated 3D character is wanted later:** the Higgsfield workspace needs a paid plan first (see the checkout links surfaced when this was attempted). At that point, swap `avatarSource` in `Hero.astro` for the generated asset and drop the duotone filter (it's compensating for real-photo quirks, not wanted on an already-stylized illustration).
 
 ---
 
@@ -755,7 +774,14 @@ You asked me to use the Higgsfield tools to turn your photo into an animated, te
 
 ## 29. Development Workflow
 
-**Status: Phases 1–5 and 7 are built** (Foundation through Motion System, skipping the now-removed Phase 6). Phases 8–12 (responsive/accessibility/performance/SEO audits and final polish) have had an initial implementation pass built-in from the start (see Sections 13/20/21/22) but not yet a dedicated formal audit pass.
+**Status: Phases 1–5 and 7 are built** (Foundation through Motion System, skipping the now-removed Phase 6). **Phases 8, 9, 10, and 11 have now had a dedicated audit pass** (code-based — no browser/Lighthouse access in this environment, so nothing here substitutes for an actual visual/device check):
+
+- **Phase 8 (Responsive):** Breakpoints are used consistently (mobile-default, single `1024px` desktop tier, matching how the site actually shipped rather than the four-tier 480/768/1024/1440 originally specified); no fixed-width elements or `nowrap` usage found that would risk horizontal overflow on narrow viewports.
+- **Phase 9 (Accessibility):** Landmarks, heading order, alt text, `aria-hidden` usage, and focus-visible coverage all checked clean. Color contrast computed directly (WCAG formula) for every text/background pair in use — all comfortably exceed AAA (7:1); worst case is muted text on background at 7.11:1. Two real gaps found and fixed: the mobile nav menu-toggle button was ~33px tall (under the 48px touch-target guideline) — fixed with explicit `min-height`/`min-width: 48px`; the "SA" monogram logo link had an unpadded, very small hit area — fixed by extending its tap target via padding + compensating negative margin (visual size unchanged).
+- **Phase 10 (Performance):** Total page weight ~260KB uncompressed across HTML/CSS/JS/image (GSAP, the one animation dependency, is the largest single asset at ~46KB gzipped). Avatar image optimized to WebP (1.2MB source → tens of KB). Fonts load with `preconnect` + `font-display: swap`.
+- **Phase 11 (SEO):** Title, meta description, canonical, JSON-LD Person schema, sitemap, and robots.txt all present and correctly reflecting current content. One real gap found and fixed: **no OG/Twitter share image existed** (Section 27 had called for one but it was never produced) — generated a 1200×630 `public/og-image.png` (name, subtitle, domain, on-brand near-black/grey palette — built with system-font substitutes for Fraunces/JetBrains Mono, since those aren't available for server-side rendering here) and wired it into `og:image`/`twitter:image` in `BaseLayout.astro`.
+
+Phase 12 (Final Polish) has not had a dedicated pass — the items above cover most of its checklist already, but it hasn't been run as its own explicit step.
 
 ### Phase 1 — Foundation
 **Objective:** Astro project scaffolding, GitHub Actions deploy pipeline working end-to-end with a placeholder page.
@@ -769,9 +795,9 @@ You asked me to use the Higgsfield tools to turn your photo into an animated, te
 **Acceptance:** A token/typography test page renders every color, type scale, and spacing value correctly at all four breakpoints.
 
 ### Phase 3 — Core Layout
-**Objective:** `Nav`, `GrainOverlay`, `ScrollProgress`, and the base page shell.
-**Files:** `Nav.astro`, `GrainOverlay.astro`, `ScrollProgress.astro`, `BaseLayout.astro`.
-**Acceptance:** Nav behaves correctly (scroll states, responsive collapse) with placeholder section content between it and the page end. (No footer — removed per Section 7.)
+**Objective:** `GrainOverlay`, `ScrollProgress`, and the base page shell.
+**Files:** `GrainOverlay.astro`, `ScrollProgress.astro`, `BaseLayout.astro`.
+**Acceptance:** Shell renders correctly with placeholder section content. No nav/header chrome and no footer — both removed per direct instruction (Section 6/7).
 
 ### Phase 4 — Hero
 **Objective:** Full hero implementation including the entrance animation sequence, greeting rotator, waving hand, and avatar slot.
@@ -838,18 +864,19 @@ Cut entirely along with the Projects section (Section 5/15). This phase number i
 | Item | Status |
 |---|---|
 | Name | **READY** — Sarim Ansari (Hero shows first name only, "Sarim") |
-| Title / positioning | **READY** (subtitle proposed in Section 6, no objection raised) |
+| Title / subtitle / tagline / bio | **READY** — explicit content provided directly for all four Hero lines (Section 6) |
+| Location | **READY** — Mumbai, India, appended to the Hero subtitle line |
 | GitHub URL | **READY** — `github.com/sarimansari` |
 | LinkedIn URL | **READY** — `linkedin.com/in/sarimansari` (link only; profile content itself is auth-walled and unreadable) |
 | Featured projects | **REMOVED** — the Projects section was cut entirely; no longer needed |
 | Employment history — companies & dates | **READY** — Morgan Stanley, Accolite, Infosys with real dates, provided directly (Section 16) |
-| Employment history — titles & role summaries | **CONTENT NEEDED** — not yet provided; entries render without them rather than fabricating a role |
+| Employment history — titles & role summaries | **DEPRIORITIZED** — explicitly told to ignore this gap for now; entries render without them (company + dates only) rather than fabricating a role |
 | Achievements (certifications, talks, OSS, scale numbers) | **CONTENT NEEDED** |
 | Resume file | **CONTENT NEEDED** — not provided; useful to cross-check Where I've Worked facts |
 | Contact email | **READY** — `ansarisarim55@gmail.com` (your account email, used as the public contact address at your request — confirm this is the one you want public, or provide a different one) |
 | Other links (blog, X/Twitter, etc.) | **CONTENT NEEDED** — none provided; skip if none exist |
 | Availability statement | **CONTENT NEEDED** — confirm whether/how to state current availability in Contact |
-| Profile photo / avatar | **IN PROGRESS** — a Higgsfield upload widget was opened but upload completion was never confirmed; `Hero.astro` shows a placeholder box in the avatar slot until this lands |
+| Profile photo / avatar | **READY** — real photo, duotone + vignette treated, live in Hero (Section 27). Higgsfield AI-character generation was attempted but blocked by a credit paywall; not pursued further |
 | Color preference | **READY** — accent changed from amber to a cool grey (`#B0B4BA`) per direct feedback, Section 8 |
 | Colors to avoid | **READY** — none specified |
 | Inspiration references | **READY** — none specified; direction defined independently in Sections 4/8/9/10 |

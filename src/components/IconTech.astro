@@ -8,12 +8,14 @@
 // "logo not available" rather than looking like a random unrelated icon
 // the way the tech glyph would next to a company name.
 //
-// Two source formats are supported: monochrome SVGs (Simple Icons, CC0),
-// recolored via currentColor so they match the site's grey palette; and
-// multi-color raster logos (PNG) for real-world brand marks that aren't
-// monochrome-friendly (e.g. Accolite's logo has its own orange/grey brand
-// colors) — these render as-is, inlined as a base64 data URI so no extra
-// public/ asset or network request is needed.
+// Two source formats are supported, both rendered monochrome via
+// currentColor so every logo follows the site's grey palette consistently:
+// SVGs (Simple Icons, CC0) get `fill="currentColor"` injected directly; PNGs
+// (used for real-world brand marks with no clean SVG source, e.g. Accolite)
+// are rendered as a `mask-image` over a `background-color: currentColor`
+// span instead of a plain <img> — this uses only the PNG's alpha/shape and
+// discards its own raster colors, so it matches the SVG logos exactly
+// rather than standing out in its original brand colors.
 import fs from "node:fs";
 import path from "node:path";
 
@@ -43,10 +45,16 @@ const LOGO_MAP: Record<string, string> = {
   Accolite: "accolite",
 };
 
+function pngDimensions(buf: Buffer) {
+  // PNG IHDR chunk: width at bytes 16-19, height at 20-23, big-endian.
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
 const logosDir = path.resolve("src/assets/logos");
 const slug = LOGO_MAP[name];
 let svg: string | null = null;
 let pngDataUri: string | null = null;
+let pngAspect: string | null = null;
 
 if (slug) {
   const svgPath = path.join(logosDir, `${slug}.svg`);
@@ -56,6 +64,8 @@ if (slug) {
   } else if (fs.existsSync(pngPath)) {
     const buf = fs.readFileSync(pngPath);
     pngDataUri = `data:image/png;base64,${buf.toString("base64")}`;
+    const { width, height } = pngDimensions(buf);
+    pngAspect = `${width} / ${height}`;
   }
 }
 
@@ -73,14 +83,15 @@ const initials = (
   .toUpperCase();
 
 const wrapperClass = kind === "company" ? "icon-tech icon-tech--company" : "icon-tech";
+const pngStyle = pngDataUri
+  ? `aspect-ratio:${pngAspect};-webkit-mask-image:url(${pngDataUri});mask-image:url(${pngDataUri})`
+  : undefined;
 ---
 
 {svg ? (
   <span class={wrapperClass} set:html={svg} {...a11yAttrs} />
 ) : pngDataUri ? (
-  <span class={wrapperClass} {...a11yAttrs}>
-    <img src={pngDataUri} alt="" />
-  </span>
+  <span class={`${wrapperClass} icon-tech--masked`} style={pngStyle} {...a11yAttrs} />
 ) : kind === "company" ? (
   <span class="icon-tech icon-tech--monogram" {...a11yAttrs}>{initials}</span>
 ) : (
@@ -111,10 +122,19 @@ const wrapperClass = kind === "company" ? "icon-tech icon-tech--company" : "icon
     height: 32px;
   }
 
-  .icon-tech--company :global(svg),
-  .icon-tech--company :global(img) {
+  .icon-tech--company :global(svg) {
     width: auto;
     height: 100%;
+  }
+
+  .icon-tech--masked {
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
   }
 
   .icon-tech--monogram {

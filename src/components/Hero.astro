@@ -1,9 +1,20 @@
 ---
-// Avatar media is pending the Higgsfield stylize/animate pipeline (Section 27
-// of MASTER_BUILD_PLAN.md — awaiting the uploaded source photo). Once
-// src/assets/avatar/avatar.mp4 (or .webm) exists, swap the placeholder
-// <div class="hero__avatar-placeholder"> below for a <video> element.
+// The AI-generated (Higgsfield) avatar hit a real paywall — the workspace
+// has no free credits and no one-time top-up, only paid subscriptions — so
+// per direct instruction this uses the real uploaded photo instead.
+// sarim-source2.png is a background-removed cutout (real alpha transparency)
+// of the photo. The SVG duotone filter below (near-black shadows -> accent
+// grey highlights) also incidentally fixes the source photo's blown-out
+// studio-lit highlights: duotone remaps the whole luminance range through a
+// 2-color lookup, so nothing can read as "glowing" the way it did when the
+// photo was shown in natural color (a brightness/contrast filter was tried
+// as a fix for that at the time; removed now that duotone supersedes it).
+//
+// Tagline/bio used to live here too, but that made the hero feel cluttered
+// — they now live in AboutMe.astro as their own section.
+import { Image } from "astro:assets";
 import site from "../data/site.json";
+import avatarSource from "../assets/avatar/sarim-source2.png";
 
 const firstName = site.name.split(" ")[0];
 
@@ -29,26 +40,39 @@ const greetings = [
       </p>
 
       <h1 class="hero__name">
-        <span class="hero__word-wrap">
-          <span class="hero__word" data-hero-word>{firstName}</span>
-        </span>
+        {["Hi,", "I'm", firstName].map((word) => (
+          <span class="hero__word-wrap">
+            <span class="hero__word" data-hero-word>{word}</span>
+          </span>
+        ))}
       </h1>
 
-      <p class="hero__subtitle meta" data-hero-subtitle>{site.subtitle}</p>
-
-      <p class="hero__positioning" data-hero-positioning>{site.positioning}</p>
+      <p class="hero__subtitle meta" data-hero-subtitle>
+        {site.subtitle} <span class="hero__location">· {site.location}</span>
+      </p>
     </div>
 
-    <div class="hero__avatar" aria-hidden="true">
-      <div class="hero__avatar-placeholder">
-        <span class="meta">[avatar pending]</span>
-      </div>
+    <div class="hero__avatar">
+      <svg width="0" height="0" style="position:absolute">
+        <filter id="hero-duotone" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0" />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues="0.043 0.690" />
+            <feFuncG type="table" tableValues="0.047 0.706" />
+            <feFuncB type="table" tableValues="0.055 0.729" />
+          </feComponentTransfer>
+        </filter>
+      </svg>
+      <Image
+        src={avatarSource}
+        alt={`${site.name} portrait`}
+        width={640}
+        loading="eager"
+        fetchpriority="high"
+        draggable="false"
+        class="hero__avatar-image"
+      />
     </div>
-  </div>
-
-  <div class="hero__scroll-cue" data-hero-scroll-cue aria-hidden="true">
-    <span class="hero__scroll-line"></span>
-    <span class="meta">scroll</span>
   </div>
 </section>
 
@@ -74,6 +98,12 @@ const greetings = [
     gap: var(--space-12);
     align-items: center;
     max-width: 1200px;
+    /* Centered in the viewport (not flush-left) so large/ultrawide monitors
+       get symmetric breathing room on both sides instead of a huge empty
+       gap on the right — applied consistently across every section (see
+       Skills/WhereIveWorked/Contact). Text itself stays left-aligned within
+       this block; only the block's position is centered. */
+    margin: 0 auto;
   }
 
   @media (min-width: 1024px) {
@@ -170,66 +200,72 @@ const greetings = [
     display: inline-block;
     opacity: 0;
     transform: translateY(24px);
+    margin-right: 0.28em;
   }
 
   .hero__subtitle {
     opacity: 0;
     transform: translateY(16px);
-    margin-bottom: var(--space-8);
     color: var(--color-text-muted);
   }
 
-  .hero__positioning {
-    opacity: 0;
-    transform: translateY(16px);
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    line-height: 1.4;
-    max-width: 640px;
-    color: var(--color-text);
+  .hero__location {
+    color: var(--color-text-muted);
+    opacity: 0.75;
   }
 
   .hero__avatar {
-    display: flex;
-    justify-content: center;
-  }
-
-  .hero__avatar-placeholder {
-    aspect-ratio: 1;
+    position: relative;
     width: 100%;
-    max-width: 340px;
-    border: 1px dashed var(--color-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
+    max-width: 420px;
+    aspect-ratio: 1;
+    margin: 0 auto;
   }
 
-  .hero__scroll-cue {
+  .hero__avatar-image {
     position: absolute;
-    bottom: var(--space-8);
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-2);
-    opacity: 0;
-  }
-
-  .hero__scroll-line {
-    width: 1px;
-    height: 32px;
-    background: var(--color-text-muted);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* draggable="false" on the element covers most browsers; Safari needs
+       -webkit-user-drag too (now set site-wide on all img in base.css),
+       since it doesn't fully honor the attribute on its own — without it,
+       dragging shows a ghost preview of the raw, untreated source image
+       (no duotone/mask), which looks like a rendering bug. */
+    object-fit: cover;
+    object-position: 50% 20%;
+    /* Duotone remaps the whole luminance range through a 2-color lookup
+       (near-black shadows -> accent-grey highlights), which as a side
+       effect also fixes the source photo's blown-out studio-lit highlights
+       — nothing can read as "glowing" once it's clamped to this range. */
+    filter: url(#hero-duotone);
+    /* Feather the cutout's own alpha near the edges (rather than overlaying
+       a flat color vignette) so it fades into --color-bg gradually instead
+       of ending in a hard silhouette line. A symmetric ellipse centered in
+       the box (tried first) faded the top as aggressively as the bottom,
+       eating into the hair — so this ellipse is deliberately oversized and
+       centered above the box (cy -31.25%). The top edge sits well inside
+       the 45% inner-radius stop (hair untouched); the bottom edge lands
+       around 60% of the way to the 75% outer stop, so the hoodie stays
+       clearly visible with only a short, late fade right at the edge
+       (a first pass here faded gradually all the way from 20%, which read
+       as too gradual and erased most of the hoodie). Horizontal
+       radius/position stay centered/symmetric — the sides still fade
+       evenly on both edges. */
+    mask-image: radial-gradient(50% 218.75% at 50% -31.25%, white 45%, transparent 75%);
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: radial-gradient(50% 218.75% at 50% -31.25%, white 45%, transparent 75%);
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
   }
 
   /* Reduced-motion / no-JS fallback: content is already in place, just needs opacity */
   .hero__content.is-visible .hero__greeting,
   .hero__content.is-visible .hero__word,
-  .hero__content.is-visible .hero__subtitle,
-  .hero__content.is-visible .hero__positioning {
+  .hero__content.is-visible .hero__subtitle {
     opacity: 1;
     transform: none;
   }
@@ -237,9 +273,7 @@ const greetings = [
   @media (prefers-reduced-motion: reduce) {
     .hero__greeting,
     .hero__word,
-    .hero__subtitle,
-    .hero__positioning,
-    .hero__scroll-cue {
+    .hero__subtitle {
       opacity: 1;
       transform: none;
     }

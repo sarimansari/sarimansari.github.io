@@ -22,7 +22,6 @@ const groups = [
 
 <section class="skills" id="skills">
   <div class="skills__inner">
-    <p class="eyebrow" data-reveal>// 01 — skills</p>
     <h2 class="skills__heading" data-reveal>Skills</h2>
 
     <div class="skills__groups">
@@ -56,12 +55,16 @@ const groups = [
   }
 
   .skills__inner {
+    /* Centered in the viewport, consistently with every other section (see
+       Hero.astro for the full rationale) — large monitors get symmetric
+       whitespace instead of everything crammed against the left edge. Text
+       itself stays left-aligned within this block. */
     max-width: var(--container-max);
     margin: 0 auto;
   }
 
   .skills__heading {
-    margin: var(--space-4) 0 var(--space-16);
+    margin: 0 0 var(--space-16);
   }
 
   .skills__groups {

@@ -10,7 +10,6 @@ import experience from "../data/experience.json";
 
 <section class="experience" id="experience">
   <div class="experience__inner">
-    <p class="eyebrow" data-reveal>// 02 — where I've worked</p>
     <h2 class="experience__heading" data-reveal>Where I've Worked</h2>
 
     {experience.length === 0 ? (
@@ -29,11 +28,8 @@ import experience from "../data/experience.json";
             <div class="timeline__marker" aria-hidden="true"></div>
             <div class="timeline__content">
               <div class="timeline__header">
-                <IconTech name={entry.company} kind="company" label={entry.company} />
+                <IconTech name={entry.company} kind="company" label={`${entry.company} — ${entry.dates}${entry.title ? ` · ${entry.title}` : ""}`} />
               </div>
-              <p class="meta timeline__dates">
-                {entry.dates}{entry.title ? ` · ${entry.title}` : ""}
-              </p>
               {entry.summary && <p class="timeline__summary">{entry.summary}</p>}
               {entry.tech?.length > 0 && (
                 <ul class="timeline__tags">
@@ -62,12 +58,20 @@ import experience from "../data/experience.json";
   }
 
   .experience__inner {
-    max-width: var(--container-reading);
+    /* Centered in the viewport, consistently with every other section (see
+       Hero.astro for the full rationale). Also widened from the reading
+       (760px) container to the full container-max, matching every other
+       section's width — a narrower block centered on its own still landed
+       at a different left edge than the wider sections, which is the same
+       inconsistency this is fixing, just from a different cause. Timeline
+       entries (dates, short summaries) don't need paragraph-width line
+       constraints the way Contact's bio text does. */
+    max-width: var(--container-max);
     margin: 0 auto;
   }
 
   .experience__heading {
-    margin: var(--space-4) 0 var(--space-16);
+    margin: 0 0 var(--space-16);
   }
 
   .experience__placeholder {
@@ -82,6 +86,11 @@ import experience from "../data/experience.json";
   }
 
   .timeline {
+    /* Capped narrower than .experience__inner for readable line lengths on
+       summary text — same pattern as Contact's bio paragraph. The outer
+       box still governs shared alignment with other sections; this only
+       constrains the content's own width, not its position. */
+    max-width: var(--container-reading);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -124,10 +133,6 @@ import experience from "../data/experience.json";
     display: flex;
     align-items: center;
     margin-bottom: var(--space-3);
-  }
-
-  .timeline__dates {
-    margin-bottom: var(--space-4);
   }
 
   .timeline__summary {

@@ -12,9 +12,9 @@ export function prefersReducedMotion() {
 }
 
 // Hero entrance sequence (Section 6/10): greeting/wave -> name (word stagger)
-// -> subtitle -> positioning line -> scroll cue. Total <= ~1.4s.
-// `heroSection` is the outer .hero element — the scroll cue lives as its
-// direct child, as a sibling of .hero__content, not nested inside it.
+// -> subtitle. Total <= ~1s. (Tagline/bio moved to AboutMe.astro, which uses
+// the generic data-reveal scroll-reveal system below instead of this
+// hero-specific timeline; the scroll cue was removed entirely.)
 export function heroEntrance(heroSection) {
   if (!heroSection) return;
   const content = heroSection.querySelector("[data-hero-content]");
@@ -28,16 +28,12 @@ export function heroEntrance(heroSection) {
   const eyebrow = content.querySelector("[data-hero-eyebrow]");
   const words = content.querySelectorAll("[data-hero-word]");
   const subtitle = content.querySelector("[data-hero-subtitle]");
-  const positioning = content.querySelector("[data-hero-positioning]");
-  const scrollCue = heroSection.querySelector("[data-hero-scroll-cue]");
 
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
   tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.5 })
     .to(words, { opacity: 1, y: 0, duration: 0.7, stagger: 0.05 }, "-=0.2")
-    .to(subtitle, { opacity: 1, y: 0, duration: 0.6 }, "-=0.3")
-    .to(positioning, { opacity: 1, y: 0, duration: 0.6 }, "-=0.35")
-    .to(scrollCue, { opacity: 1, duration: 0.5 }, "-=0.2");
+    .to(subtitle, { opacity: 1, y: 0, duration: 0.6 }, "-=0.3");
 
   content.classList.add("is-visible");
 }
