@@ -1,14 +1,17 @@
 [
   {
     "company": "Morgan Stanley",
-    "dates": "Sep 2022 – Present"
+    "dates": "Sep 2022 – Present",
+    "summary": "Building GenAI-powered analytics platforms and real-time data pipelines with Kafka and Snowflake Cortex AI — plus mentoring engineers and running the team as scrum master."
   },
   {
     "company": "Accolite",
-    "dates": "Feb 2020 – Sep 2022"
+    "dates": "Feb 2020 – Sep 2022",
+    "summary": "Led a screening platform that consolidated multiple data vendors, drove a 1TB+ PostgreSQL migration, and pushed the team toward a DevOps-first delivery model."
   },
   {
     "company": "Infosys",
-    "dates": "Jun 2018 – Feb 2020"
+    "dates": "Jun 2018 – Feb 2020",
+    "summary": "Built Spring Boot microservices and UK Open Banking–compliant payment workflows for a fintech client, along with reusable UI components."
   }
 ]

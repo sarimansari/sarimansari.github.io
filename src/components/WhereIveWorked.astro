@@ -30,6 +30,7 @@ import experience from "../data/experience.json";
             <div class="timeline__content">
               <div class="timeline__header">
                 <IconTech name={entry.company} kind="company" label={`${entry.company} — ${entry.dates}${entry.title ? ` · ${entry.title}` : ""}`} />
+                <span class="timeline__dates meta" aria-hidden="true">{entry.dates}</span>
               </div>
               {entry.summary && <p class="timeline__summary">{entry.summary}</p>}
               {entry.tech?.length > 0 && (
@@ -57,6 +58,9 @@ import experience from "../data/experience.json";
     flex-direction: column;
     justify-content: center;
     padding: var(--space-24) var(--space-6);
+    /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   @media (min-width: 1024px) {
@@ -148,7 +152,12 @@ import experience from "../data/experience.json";
   .timeline__header {
     display: flex;
     align-items: center;
+    gap: var(--space-4);
     margin-bottom: var(--space-3);
+  }
+
+  .timeline__dates {
+    color: var(--color-text-muted);
   }
 
   .timeline__summary {

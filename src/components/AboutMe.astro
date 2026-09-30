@@ -8,7 +8,6 @@ import SplitHeading from "./SplitHeading.astro";
 <section class="about" id="about" data-recede>
   <div class="about__inner">
     <SplitHeading text="About" tag="h2" class="about__heading" />
-    <p class="about__tagline" data-reveal>{site.tagline}</p>
     <p class="about__bio" data-reveal>{site.bio}</p>
   </div>
 </section>
@@ -24,6 +23,9 @@ import SplitHeading from "./SplitHeading.astro";
     flex-direction: column;
     justify-content: center;
     padding: var(--space-24) var(--space-6);
+    /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   @media (min-width: 1024px) {
@@ -46,23 +48,28 @@ import SplitHeading from "./SplitHeading.astro";
     margin: 0 auto;
   }
 
-  .about__tagline {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    line-height: 1.4;
-    max-width: 640px;
+  .about__bio {
+    /* Back to one flowing paragraph (was briefly split into a separate
+       line per sentence) — sized up from body copy so it reads as a real
+       statement, at full text color since it's the section's only
+       content. Sentence-case here (not the site-wide lowercase aesthetic
+       headings use) since this is hand-authored prose, not a UI label. */
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    line-height: 1.6;
+    max-width: 720px;
     color: var(--color-text);
-    margin-bottom: var(--space-4);
   }
 
-  .about__bio {
-    /* No font-size override — inherits body's responsive scale (1rem mobile
-       / 1.125rem desktop) instead of pinning to a size that never grew on
-       desktop like every other paragraph on the site does. */
-    line-height: 1.6;
-    max-width: 560px;
-    color: var(--color-text-muted);
+  .about__bio::first-letter {
+    /* The opening "I" as a small styled initial — display font for a
+       different texture than the body serif, a bit bigger without going
+       full drop-cap (no float/multi-line span). Kept modest and paired
+       with line-height:1: much larger and the enlarged glyph's line box
+       pushes the second line down further than the rest, reading as an
+       uneven gap rather than a deliberate flourish. */
+    font-family: var(--font-display);
+    font-size: 1.3em;
+    line-height: 1;
+    font-weight: 500;
   }
 </style>

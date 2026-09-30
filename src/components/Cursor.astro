@@ -1,0 +1,72 @@
+---
+// Custom cursor: a small solid dot tracks the pointer exactly, a larger
+// ring trails behind it with eased lag (both driven by initCursor() in
+// motion.js via GSAP quickTo — kept centralized there like every other
+// GSAP-driven effect on the site). Fine-pointer devices only: hidden
+// entirely on touch (nothing to track) and under prefers-reduced-motion
+// (the trailing lag is exactly the kind of motion that preference asks to
+// skip) — the native cursor is the fallback in both cases, via the scoped
+// media query below.
+---
+
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<style>
+  .cursor-dot,
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: var(--z-cursor);
+    opacity: 0;
+  }
+
+  .cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent);
+  }
+
+  .cursor-ring {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-accent);
+    transition:
+      width var(--duration-micro) ease,
+      height var(--duration-micro) ease,
+      border-color var(--duration-micro) ease,
+      opacity var(--duration-micro) ease;
+  }
+
+  .cursor-ring.is-active {
+    width: 56px;
+    height: 56px;
+    border-color: var(--color-text);
+  }
+
+  .cursor-ring.is-clicking {
+    width: 28px;
+    height: 28px;
+  }
+
+  .cursor-dot.is-visible,
+  .cursor-ring.is-visible {
+    opacity: 1;
+  }
+
+  /* Native cursor only hides once JS confirms it can actually draw the
+     replacement (same html.js zero-flash convention used elsewhere on the
+     site), and only where a real mouse exists — touch has no cursor to
+     hide, and reduced-motion keeps the native arrow since the replacement
+     leans on a trailing-lag animation. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    html.js body,
+    html.js a,
+    html.js button {
+      cursor: none;
+    }
+  }
+</style>

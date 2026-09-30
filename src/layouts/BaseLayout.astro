@@ -1,4 +1,5 @@
 ---
+import Cursor from "../components/Cursor.astro";
 import GrainOverlay from "../components/GrainOverlay.astro";
 import Loader from "../components/Loader.astro";
 import ScrollProgress from "../components/ScrollProgress.astro";
@@ -80,6 +81,7 @@ const ogImageURL = new URL("/og-image.png", Astro.site);
     <Loader />
     <GrainOverlay />
     <ScrollProgress />
+    <Cursor />
     <main id="main">
       <slot />
     </main>
@@ -89,13 +91,13 @@ const ogImageURL = new URL("/og-image.png", Astro.site);
         initScrollReveals,
         initHeadingReveals,
         initSectionRecede,
-        initSmoothScroll,
+        initCursor,
       } from "../scripts/motion.js";
 
-      initSmoothScroll();
       initScrollReveals();
       initHeadingReveals();
       initSectionRecede();
+      initCursor();
     </script>
   </body>
 </html>

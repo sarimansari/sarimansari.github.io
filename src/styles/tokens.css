@@ -51,6 +51,7 @@
   --z-grain: 200;
   --z-progress: 300;
   --z-loader: 400;
+  --z-cursor: 500;
 
   /* Breakpoints (reference values; used directly in media queries) */
   --bp-sm: 480px;

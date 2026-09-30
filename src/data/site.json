@@ -3,13 +3,13 @@
   "subtitle": "Software Engineer & GenAI Engineer",
   "location": "Mumbai, India",
   "roles": [
-    "a software engineer",
-    "a full-stack developer",
-    "a GenAI engineer",
-    "a platform architect"
+    "software engineer",
+    "full-stack developer",
+    "GenAI expert",
+    "platform architect"
   ],
-  "tagline": "8+ years of experience building backend systems, based out of mumbai.",
-  "bio": "mostly Java and Spring, plus the usual distributed-systems stuff. more recently, agentic AI: RAG pipelines, LLM tooling. different problems, same way of thinking about them.",
+  "bio": "I'm a senior software engineer based in Mumbai. 8+ years building software — mostly scalable applications and distributed architecture. Lately I've been deep in agentic AI and GenAI, building the platforms that tie it all together.",
+  "contactIntro": "have a project, a question, or just want to say hi — i read every message.",
   "email": "ansarisarim55@gmail.com",
   "github": "https://github.com/sarimansari",
   "linkedin": "https://www.linkedin.com/in/sarimansari/",

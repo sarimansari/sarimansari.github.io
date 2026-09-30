@@ -3,10 +3,10 @@
    specifically Latinotype's free DEMO build (Regular weight only, no
    italic face). Per direct instruction to use it anyway; the person
    providing this file is responsible for Latinotype's demo-license terms
-   on the deployed site. Weight 500 (h1/h2/h3) and the About tagline's
-   italic will fall back to the browser's synthetic bold/oblique since
-   only one real face is embedded — Fraunces stays in --font-display's
-   stack after Recoleta as a true fallback if this file fails to load. */
+   on the deployed site. Weight 500 (h1/h2/h3) will fall back to the
+   browser's synthetic bold since only one real face is embedded — Fraunces
+   stays in --font-display's stack after Recoleta as a true fallback if
+   this file fails to load. */
 @font-face {
   font-family: "Recoleta";
   src: url("/fonts/recoleta-regular-demo.otf") format("opentype");
@@ -181,27 +181,15 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Lenis (initSmoothScroll in motion.js) takes over scrolling with its own
-   easing/inertia once it initializes and adds this class — native
-   scroll-behavior:smooth above would otherwise double up with it and fight
-   over anchor-jump easing. Lenis itself is skipped under reduced motion
-   (see motion.js), so html.lenis never appears in that case and the plain
-   native smooth-scroll above is what reduced-motion users get instead. */
-html.lenis {
-  scroll-behavior: auto !important;
-}
-
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
+/* Page-by-page scrolling: each top-level <section> opts in via
+   scroll-snap-align (own scoped style, e.g. .hero/.about/.skills/etc.) —
+   mandatory + scroll-snap-stop:always means one wheel/swipe/keyboard
+   gesture always lands on the very next section, not a partial scroll
+   past it. Browsers already skip animating the snap settle under
+   prefers-reduced-motion per the CSSOM View spec, so no override is needed
+   here the way the old Lenis-based continuous smooth-scroll needed one. */
+html {
+  scroll-snap-type: y mandatory;
 }
 
 /*

@@ -59,6 +59,9 @@ const groups = [
     flex-direction: column;
     justify-content: center;
     padding: var(--space-24) var(--space-6);
+    /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   @media (min-width: 1024px) {

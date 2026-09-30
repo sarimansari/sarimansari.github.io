@@ -4,7 +4,6 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,31 +11,10 @@ export function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Inertial smooth scroll (Lenis), synced to GSAP's ticker so ScrollTrigger
-// stays in lockstep with it — the standard Lenis+GSAP integration. Skipped
-// entirely under reduced motion: the whole point of Lenis is added motion
-// (scroll momentum/easing), which is exactly what that preference asks to
-// avoid, so native instant scroll is the correct fallback, not a bug.
-export function initSmoothScroll() {
-  if (prefersReducedMotion()) return;
-
-  const lenis = new Lenis({
-    duration: 1.1,
-    easing: (t) => 1 - Math.pow(1 - t, 3),
-  });
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
-}
-
-// Hero entrance sequence (Section 6/10): greeting/wave -> name (word stagger)
-// -> subtitle. Total <= ~1s. (Tagline/bio moved to AboutMe.astro, which uses
-// the generic data-reveal scroll-reveal system below instead of this
-// hero-specific timeline; the scroll cue was removed entirely.)
+// Hero entrance sequence (Section 6/10): name (word stagger) -> subtitle.
+// Total <= ~1s. (Tagline/bio moved to AboutMe.astro, which uses the generic
+// data-reveal scroll-reveal system below instead of this hero-specific
+// timeline; the scroll cue was removed entirely.)
 export function heroEntrance(heroSection) {
   if (!heroSection) return;
   const content = heroSection.querySelector("[data-hero-content]");
@@ -47,15 +25,18 @@ export function heroEntrance(heroSection) {
     return;
   }
 
-  const eyebrow = content.querySelector("[data-hero-eyebrow]");
   const words = content.querySelectorAll("[data-hero-word]");
   const subtitle = content.querySelector("[data-hero-subtitle]");
+  const social = content.querySelector("[data-hero-social]");
 
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-  tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.5 })
-    .to(words, { opacity: 1, y: 0, duration: 0.7, stagger: 0.05 }, "-=0.2")
+  tl.to(words, { opacity: 1, y: 0, duration: 0.7, stagger: 0.05 })
     .to(subtitle, { opacity: 1, y: 0, duration: 0.6 }, "-=0.3");
+
+  if (social) {
+    tl.to(social, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+  }
 
   content.classList.add("is-visible");
 }
@@ -175,5 +156,64 @@ export function initScrollReveals() {
         });
       },
     });
+  });
+}
+
+// Custom cursor (Cursor.astro): a dot tracks the pointer 1:1, a larger ring
+// trails behind it via GSAP quickTo (a single reusable tween per axis,
+// cheaper than a fresh gsap.to() on every mousemove). Fine-pointer devices
+// only — no mouse to track on touch, and the trailing lag itself is the
+// motion prefers-reduced-motion asks to skip (Cursor.astro's CSS keeps the
+// native cursor visible in both cases, matching these same two guards).
+export function initCursor() {
+  if (prefersReducedMotion()) return;
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+  const dot = document.querySelector(".cursor-dot");
+  const ring = document.querySelector(".cursor-ring");
+  if (!dot || !ring) return;
+
+  gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+
+  const dotX = gsap.quickTo(dot, "x", { duration: 0.01, ease: "none" });
+  const dotY = gsap.quickTo(dot, "y", { duration: 0.01, ease: "none" });
+  const ringX = gsap.quickTo(ring, "x", { duration: 0.35, ease: "power3.out" });
+  const ringY = gsap.quickTo(ring, "y", { duration: 0.35, ease: "power3.out" });
+
+  let revealed = false;
+
+  window.addEventListener("mousemove", (e) => {
+    dotX(e.clientX);
+    dotY(e.clientY);
+    ringX(e.clientX);
+    ringY(e.clientY);
+
+    if (!revealed) {
+      revealed = true;
+      dot.classList.add("is-visible");
+      ring.classList.add("is-visible");
+    }
+  });
+
+  document.addEventListener("mouseleave", () => {
+    dot.classList.remove("is-visible");
+    ring.classList.remove("is-visible");
+  });
+
+  document.addEventListener("mouseenter", () => {
+    if (revealed) {
+      dot.classList.add("is-visible");
+      ring.classList.add("is-visible");
+    }
+  });
+
+  window.addEventListener("mousedown", () => ring.classList.add("is-clicking"));
+  window.addEventListener("mouseup", () => ring.classList.remove("is-clicking"));
+
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest("a, button")) ring.classList.add("is-active");
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest("a, button")) ring.classList.remove("is-active");
   });
 }
