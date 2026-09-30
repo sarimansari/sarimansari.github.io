@@ -61,7 +61,12 @@ import experience from "../data/experience.json";
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* safe center: centers like every other section whenever the content
+       fits, and only falls back to start-alignment on the phones where it
+       doesn't — instead of hardcoding flex-start for all mobile widths,
+       which made this section look top-aligned even on phones roomy
+       enough to center it fine (inconsistent with Hero/About/Contact). */
+    justify-content: safe center;
     padding: var(--space-24) var(--space-6);
     /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
     scroll-snap-align: start;
@@ -71,14 +76,11 @@ import experience from "../data/experience.json";
   @media (max-width: 767px) {
     .experience {
       /* Three timeline entries (dates + summary each) plus the original
-         space-24 padding routinely ran taller than one phone screen, so
-         the mandatory snap landed at the section's top but left content
-         below the fold — reaching it, then the next section, took an
-         extra manual scroll. Tighter padding and top-alignment (instead
-         of vertical centering, which only makes overflow worse) gets the
-         whole entry list to fit in one view on most phones. */
-      padding: var(--space-12) var(--space-4);
-      justify-content: flex-start;
+         space-24 padding routinely ran taller than one phone screen.
+         Vertical padding is trimmed to help that fit; horizontal padding
+         stays at space-6 to match Hero/About/Contact — the side margins
+         were never part of the overflow problem. */
+      padding: var(--space-12) var(--space-6);
     }
   }
 
@@ -89,7 +91,7 @@ import experience from "../data/experience.json";
          even after the max-width trim above, cutting off the last entry.
          Targets short viewports specifically, independent of how wide
          they are. */
-      padding: var(--space-8) var(--space-4);
+      padding: var(--space-8) var(--space-6);
     }
   }
 
