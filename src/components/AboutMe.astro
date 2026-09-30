@@ -2,11 +2,12 @@
 // Tagline + bio used to live in Hero, but that made it feel cluttered —
 // split out into their own section per direct instruction.
 import site from "../data/site.json";
+import SplitHeading from "./SplitHeading.astro";
 ---
 
-<section class="about" id="about">
+<section class="about" id="about" data-recede>
   <div class="about__inner">
-    <h2 class="about__heading" data-reveal>About</h2>
+    <SplitHeading text="About" tag="h2" class="about__heading" />
     <p class="about__tagline" data-reveal>{site.tagline}</p>
     <p class="about__bio" data-reveal>{site.bio}</p>
   </div>
@@ -14,6 +15,14 @@ import site from "../data/site.json";
 
 <style>
   .about {
+    /* Every content section shares this min-height + centering (see
+       Hero.astro, which established the pattern) so they read as
+       consistent, roughly one-screen "beats" while scrolling, instead of
+       each one's height being purely driven by how much copy it holds. */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: var(--space-24) var(--space-6);
   }
 
@@ -24,12 +33,17 @@ import site from "../data/site.json";
   }
 
   .about__inner {
+    /* width:100% is load-bearing now that .about is a flex column (for
+       vertical centering): a flex item with margin:auto and no explicit
+       width shrink-wraps to its content instead of filling the container,
+       which made short-content sections (Contact, Experience) visibly
+       center themselves while wider ones (About, Skills) looked left-
+       aligned only because their content happened to fill the width
+       anyway. Explicit width:100% + max-width restores normal block
+       behavior: full width until max-width caps it, then centered. */
+    width: 100%;
     max-width: var(--container-max);
     margin: 0 auto;
-  }
-
-  .about__heading {
-    margin-bottom: var(--space-8);
   }
 
   .about__tagline {
@@ -44,7 +58,9 @@ import site from "../data/site.json";
   }
 
   .about__bio {
-    font-size: 1rem;
+    /* No font-size override — inherits body's responsive scale (1rem mobile
+       / 1.125rem desktop) instead of pinning to a size that never grew on
+       desktop like every other paragraph on the site does. */
     line-height: 1.6;
     max-width: 560px;
     color: var(--color-text-muted);

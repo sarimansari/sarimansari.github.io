@@ -1,28 +1,34 @@
 ---
 import IconTech from "./IconTech.astro";
+import SplitHeading from "./SplitHeading.astro";
 
+// Lowercase site-wide, hand-authored here rather than via CSS
+// text-transform since these statements have acronyms embedded mid-sentence
+// (APIs, AI, GenAI, RAG, LLM) that text-transform can't selectively spare —
+// it applies uniformly to a whole text node. Tech tags (below) and "AI &
+// GenAI" itself are left in their real casing entirely, same reasoning.
 const groups = [
   {
-    name: "Backend, Systems & Frontend",
-    statement: "Designing services that hold up under real traffic, not just demos.",
+    name: "backend, systems & frontend",
+    statement: "backend services, APIs, and the frontend that talks to them.",
     tech: ["Java", "Spring Boot", "Microservices", "gRPC", "REST", "Angular"],
   },
   {
     name: "AI & GenAI",
-    statement: "Building the AI layer as an engineer, not just calling an API.",
+    statement: "agentic AI and GenAI — RAG, LLM tooling, agent architectures.",
     tech: ["Agentic Architectures", "RAG (FAISS)", "LLaMA 3", "Spring AI", "MCP"],
   },
   {
-    name: "Data & Messaging",
-    statement: "Choosing the right store and the right pipe for the job.",
+    name: "data & messaging",
+    statement: "data storage and messaging.",
     tech: ["MongoDB", "Redis", "Snowflake", "Kafka"],
   },
 ];
 ---
 
-<section class="skills" id="skills">
+<section class="skills" id="skills" data-recede>
   <div class="skills__inner">
-    <h2 class="skills__heading" data-reveal>Skills</h2>
+    <SplitHeading text="Skills" tag="h2" class="skills__heading" />
 
     <div class="skills__groups">
       {groups.map((group) => (
@@ -45,6 +51,13 @@ const groups = [
 
 <style>
   .skills {
+    /* min-height + centering shared with every other content section (see
+       Hero.astro / AboutMe.astro) so section heights read as consistent
+       instead of purely content-driven. */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: var(--space-24) var(--space-6);
   }
 
@@ -55,22 +68,24 @@ const groups = [
   }
 
   .skills__inner {
-    /* Centered in the viewport, consistently with every other section (see
-       Hero.astro for the full rationale) — large monitors get symmetric
-       whitespace instead of everything crammed against the left edge. Text
-       itself stays left-aligned within this block. */
+    /* width:100% is load-bearing now that .skills is a flex column (for
+       vertical centering) — see the matching comment in AboutMe.astro for
+       why a flex item with margin:auto and no explicit width shrink-wraps
+       instead of filling the container. */
+    width: 100%;
     max-width: var(--container-max);
     margin: 0 auto;
   }
 
-  .skills__heading {
-    margin: 0 0 var(--space-16);
-  }
-
   .skills__groups {
+    /* Tighter than the old space-12 gap: with 3 groups stacked on mobile,
+       that alone added 96px, which pushed this section's content taller
+       than most phone viewports — leaving no room for the vertical
+       centering every section is supposed to share (see .skills above) to
+       actually show, unlike shorter sections like Contact. */
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-12);
+    gap: var(--space-8);
   }
 
   @media (min-width: 768px) {
@@ -87,18 +102,23 @@ const groups = [
 
   .skills__group {
     border-top: 1px solid var(--color-border);
-    padding-top: var(--space-6);
+    padding-top: var(--space-4);
     transition: opacity 150ms ease;
   }
 
   .skills__group-name {
+    /* Opts out of the global h1/h2/h3 lowercase rule (see base.css) —
+       "AI & GenAI" needs to render exactly as authored above, and the
+       other two names are already hand-authored lowercase themselves. */
+    text-transform: none;
     margin-bottom: var(--space-2);
   }
 
   .skills__group-statement {
+    /* No font-size override — inherits body's responsive scale, matching
+       About's bio (same "supporting sentence under a heading" role). */
     color: var(--color-text-muted);
-    font-size: 0.9375rem;
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-2);
   }
 
   .skills__tags {

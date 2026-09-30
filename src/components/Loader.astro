@@ -1,0 +1,102 @@
+---
+// Brief branded intro on first paint, not a functional progress indicator —
+// this is a static site with small assets, so there's no real load time
+// worth covering. Only shown when JS is available (html.js, set
+// synchronously in BaseLayout before paint, same pattern [data-reveal]
+// uses) so a JS-disabled visitor never gets stuck looking at it, and
+// skipped entirely under prefers-reduced-motion per the site's "usable
+// without animation" rule (see base.css).
+---
+
+<div class="loader" aria-hidden="true">
+  <span class="loader__count" id="loader-count">00</span>
+</div>
+
+<style>
+  .loader {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-loader);
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    transition: opacity var(--duration-component) var(--ease-entrance);
+  }
+
+  html.js .loader {
+    display: flex;
+    opacity: 1;
+  }
+
+  .loader.is-done {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loader__count {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+  }
+
+  .loader__count::after {
+    content: "%";
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js .loader {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const loaderEl = document.querySelector<HTMLElement>(".loader");
+  const countEl = document.getElementById("loader-count");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (loaderEl && countEl && !reduceMotion) {
+    const DURATION = 900;
+    const start = performance.now();
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const pct = Math.min(100, Math.round((elapsed / DURATION) * 100));
+      countEl!.textContent = String(pct).padStart(2, "0");
+
+      if (pct < 100) {
+        requestAnimationFrame(tick);
+      } else {
+        finish();
+      }
+    }
+
+    function finish() {
+      const reveal = () => {
+        loaderEl!.classList.add("is-done");
+        // Fired right as the fade-out starts (not after it finishes) so
+        // Hero's entrance animation (see Hero.astro) plays underneath the
+        // dissolving loader instead of waiting for it to fully disappear
+        // first — one continuous reveal instead of two disconnected beats.
+        window.dispatchEvent(new CustomEvent("site:ready"));
+        // Matches the CSS transition duration (--duration-component) —
+        // fully remove afterward so it can't catch clicks or stay in the
+        // accessibility tree.
+        setTimeout(() => loaderEl!.remove(), 550);
+      };
+
+      if (document.readyState === "complete") {
+        reveal();
+      } else {
+        window.addEventListener("load", reveal, { once: true });
+      }
+    }
+
+    requestAnimationFrame(tick);
+  } else if (loaderEl) {
+    loaderEl.remove();
+    window.dispatchEvent(new CustomEvent("site:ready"));
+  }
+</script>

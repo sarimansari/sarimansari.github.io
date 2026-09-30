@@ -13,9 +13,9 @@
   --color-error: #e0645a;
 
   /* Typography */
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --font-display: "Recoleta", "Fraunces", Georgia, serif;
+  --font-body: "Lora", Georgia, serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Consolas, monospace;
 
   /* Spacing (base unit 4px) */
   --space-1: 4px;
@@ -50,6 +50,7 @@
   --z-nav: 100;
   --z-grain: 200;
   --z-progress: 300;
+  --z-loader: 400;
 
   /* Breakpoints (reference values; used directly in media queries) */
   --bp-sm: 480px;

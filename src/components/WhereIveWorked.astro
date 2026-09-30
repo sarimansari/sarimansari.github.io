@@ -5,12 +5,13 @@
 // wasn't provided. Shape:
 //   { "company": "...", "dates": "...", "title"?: "...", "summary"?: "...", "tech"?: ["..."] }
 import IconTech from "./IconTech.astro";
+import SplitHeading from "./SplitHeading.astro";
 import experience from "../data/experience.json";
 ---
 
-<section class="experience" id="experience">
+<section class="experience" id="experience" data-recede>
   <div class="experience__inner">
-    <h2 class="experience__heading" data-reveal>Where I've Worked</h2>
+    <SplitHeading text="Where I've Worked" tag="h2" class="experience__heading" />
 
     {experience.length === 0 ? (
       <div class="experience__placeholder" data-reveal>
@@ -48,6 +49,13 @@ import experience from "../data/experience.json";
 
 <style>
   .experience {
+    /* min-height + centering shared with every other content section (see
+       Hero.astro / AboutMe.astro) so section heights read as consistent
+       instead of purely content-driven. */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: var(--space-24) var(--space-6);
   }
 
@@ -65,13 +73,18 @@ import experience from "../data/experience.json";
        at a different left edge than the wider sections, which is the same
        inconsistency this is fixing, just from a different cause. Timeline
        entries (dates, short summaries) don't need paragraph-width line
-       constraints the way Contact's bio text does. */
+       constraints the way Contact's bio text does.
+       width:100% is load-bearing now that .experience is a flex column
+       (for vertical centering) — see the matching comment in
+       AboutMe.astro for why a flex item with margin:auto and no explicit
+       width shrink-wraps instead of filling the container. This section's
+       own content (just a logo per entry) is narrow enough that without
+       this, it was visibly shrink-wrapping and centering itself while
+       wider sections weren't — exactly the "left aligned vs. centered"
+       inconsistency reported. */
+    width: 100%;
     max-width: var(--container-max);
     margin: 0 auto;
-  }
-
-  .experience__heading {
-    margin: 0 0 var(--space-16);
   }
 
   .experience__placeholder {
@@ -109,9 +122,12 @@ import experience from "../data/experience.json";
   }
 
   .timeline__entry {
+    /* space-16 (was space-12) — more breathing room between entries, using
+       an existing scale token rather than a one-off value so it stays
+       consistent with the rest of the design system. */
     position: relative;
     padding-left: var(--space-12);
-    padding-bottom: var(--space-12);
+    padding-bottom: var(--space-16);
   }
 
   .timeline__entry:last-child {

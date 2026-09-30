@@ -1,3 +1,20 @@
+/* Self-hosted, unlike every other font on the site (see BaseLayout.astro's
+   Google Fonts link) — Recoleta isn't on Google Fonts, and this is
+   specifically Latinotype's free DEMO build (Regular weight only, no
+   italic face). Per direct instruction to use it anyway; the person
+   providing this file is responsible for Latinotype's demo-license terms
+   on the deployed site. Weight 500 (h1/h2/h3) and the About tagline's
+   italic will fall back to the browser's synthetic bold/oblique since
+   only one real face is embedded — Fraunces stays in --font-display's
+   stack after Recoleta as a true fallback if this file fails to load. */
+@font-face {
+  font-family: "Recoleta";
+  src: url("/fonts/recoleta-regular-demo.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -65,6 +82,14 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 500;
+  /* Site-wide lowercase aesthetic. Safe as a blanket rule here since every
+     heading on the site is acronym-free (Hero's name, the four section
+     titles) — the one exception, Skills' "AI & GenAI" group name, opts
+     back out explicitly in Skills.astro rather than this rule trying to
+     special-case it. Body copy with embedded acronyms (About's bio,
+     Skills' statements) is hand-authored lowercase instead of relying on
+     this — text-transform can't cherry-pick which words to spare. */
+  text-transform: lowercase;
 }
 
 h1 {
@@ -104,14 +129,14 @@ h3 {
 
 .meta {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.02em;
   color: var(--color-text-muted);
 }
 
 @media (min-width: 1024px) {
   .meta {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -156,6 +181,29 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis (initSmoothScroll in motion.js) takes over scrolling with its own
+   easing/inertia once it initializes and adds this class — native
+   scroll-behavior:smooth above would otherwise double up with it and fight
+   over anchor-jump easing. Lenis itself is skipped under reduced motion
+   (see motion.js), so html.lenis never appears in that case and the plain
+   native smooth-scroll above is what reduced-motion users get instead. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 /*
  * Scroll-reveal elements (data-reveal, used by initScrollReveals in
  * motion.js) only start hidden once JS has confirmed it can reveal them —
@@ -175,6 +223,35 @@ html.js [data-reveal].is-visible {
 
 @media (prefers-reduced-motion: reduce) {
   html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Section-heading word reveal (SplitHeading.astro), same zero-flash
+ * approach as [data-reveal] above and the same mask technique Hero's name
+ * uses (.hero__word-wrap / .hero__word) — each word sits in an
+ * overflow-hidden wrapper and rises up from below it. Animated by
+ * initHeadingReveals() in motion.js.
+ */
+.split-heading__wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.split-heading__word {
+  display: inline-block;
+}
+
+html.js .split-heading__word {
+  opacity: 0;
+  transform: translateY(110%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .split-heading__word {
     opacity: 1;
     transform: none;
   }

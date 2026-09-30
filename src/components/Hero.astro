@@ -24,6 +24,8 @@ const greetings = [
   { word: "Hola", lang: "es" },
   { word: "Hallo", lang: "de" },
   { word: "مرحباً", lang: "ar", dir: "rtl" },
+  { word: "你好", lang: "zh" },
+  { word: "नमस्ते", lang: "hi" },
 ];
 ---
 
@@ -47,8 +49,9 @@ const greetings = [
         ))}
       </h1>
 
-      <p class="hero__subtitle meta" data-hero-subtitle>
-        {site.subtitle} <span class="hero__location">· {site.location}</span>
+      <p class="hero__role meta" data-hero-subtitle>
+        <span class="hero__role-typed" data-hero-role-typed aria-hidden="true">{site.roles[0]}</span><span class="hero__role-cursor" aria-hidden="true"></span>
+        <span class="hero__role-sr">{site.roles.join(", ")}</span>
       </p>
     </div>
 
@@ -108,7 +111,11 @@ const greetings = [
 
   @media (min-width: 1024px) {
     .hero__grid {
-      grid-template-columns: 1.3fr 1fr;
+      /* Was 1.3fr 1fr — narrowed the text column to widen the avatar's
+         column instead (see .hero__avatar's max-width below), since the
+         avatar was maxing out at ~492px regardless of how high its own
+         max-width was set. */
+      grid-template-columns: 1fr 1.1fr;
       gap: var(--space-16);
     }
   }
@@ -169,20 +176,35 @@ const greetings = [
     font-family: var(--font-mono);
     font-size: 0.9375rem;
     color: var(--color-text-muted);
+    /* Site-wide lowercase aesthetic — safe here (no acronyms in any
+       greeting; the non-Latin scripts have no case to transform anyway). */
+    text-transform: lowercase;
     opacity: 0;
-    animation: hero-rotator 10s ease-in-out infinite;
+    /* 14s = 7 greetings x 2s each, same per-word spacing the original 5-word
+       version used (10s / 5). Keyframe percentages below are the original
+       0/3/5/15/18 timings rescaled by 10/14 so each word still gets the
+       same ~1s of visible time regardless of how many are in the list. */
+    animation: hero-rotator 14s ease-in-out infinite;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__rotator-word {
+      font-size: 1.0625rem;
+    }
   }
 
   .hero__rotator-word:nth-child(1) { animation-delay: 0s; }
-  .hero__rotator-word:nth-child(2) { animation-delay: -8s; }
-  .hero__rotator-word:nth-child(3) { animation-delay: -6s; }
-  .hero__rotator-word:nth-child(4) { animation-delay: -4s; }
-  .hero__rotator-word:nth-child(5) { animation-delay: -2s; }
+  .hero__rotator-word:nth-child(2) { animation-delay: -12s; }
+  .hero__rotator-word:nth-child(3) { animation-delay: -10s; }
+  .hero__rotator-word:nth-child(4) { animation-delay: -8s; }
+  .hero__rotator-word:nth-child(5) { animation-delay: -6s; }
+  .hero__rotator-word:nth-child(6) { animation-delay: -4s; }
+  .hero__rotator-word:nth-child(7) { animation-delay: -2s; }
 
   @keyframes hero-rotator {
-    0%, 3% { opacity: 0; }
-    5%, 15% { opacity: 1; }
-    18%, 100% { opacity: 0; }
+    0%, 2% { opacity: 0; }
+    4%, 11% { opacity: 1; }
+    13%, 100% { opacity: 0; }
   }
 
   .hero__name {
@@ -203,21 +225,66 @@ const greetings = [
     margin-right: 0.28em;
   }
 
-  .hero__subtitle {
+  .hero__role {
+    /* Sized to match .hero__rotator-word above (both are Hero's small mono
+       accent lines) rather than the smaller .meta default the class still
+       supplies for font-family/color/letter-spacing. */
     opacity: 0;
     transform: translateY(16px);
     color: var(--color-text-muted);
+    font-size: 0.9375rem;
   }
 
-  .hero__location {
-    color: var(--color-text-muted);
-    opacity: 0.75;
+  @media (min-width: 1024px) {
+    .hero__role {
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* Typed by the script below (character-by-character, then deleted and
+     retyped with the next role) — deliberately a different effect than the
+     greeting's plain crossfade so the two rotators don't read as the same
+     animation twice. site.roles[0] is rendered server-side as the initial
+     content so something sensible shows before JS runs (or if it never
+     does); the script clears it and takes over once it's ready. */
+  .hero__role-cursor {
+    display: inline-block;
+    width: 1px;
+    height: 0.9em;
+    margin-left: 2px;
+    background: var(--color-accent);
+    vertical-align: -0.1em;
+    animation: hero-cursor-blink 900ms step-end infinite;
+  }
+
+  @keyframes hero-cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Visually hidden but readable by screen readers — the typed span is
+     aria-hidden since its text changes constantly, so this static sentence
+     is what assistive tech announces instead. */
+  .hero__role-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .hero__avatar {
     position: relative;
     width: 100%;
-    max-width: 420px;
+    /* Real ceiling is the avatar's grid column, not this value directly
+       (~595px at 1024px+, narrower on mobile's single-column layout) — set
+       generously so it never clips the column, not because it's the
+       actual rendered size. */
+    max-width: 640px;
     aspect-ratio: 1;
     margin: 0 auto;
   }
@@ -265,7 +332,7 @@ const greetings = [
   /* Reduced-motion / no-JS fallback: content is already in place, just needs opacity */
   .hero__content.is-visible .hero__greeting,
   .hero__content.is-visible .hero__word,
-  .hero__content.is-visible .hero__subtitle {
+  .hero__content.is-visible .hero__role {
     opacity: 1;
     transform: none;
   }
@@ -273,7 +340,7 @@ const greetings = [
   @media (prefers-reduced-motion: reduce) {
     .hero__greeting,
     .hero__word,
-    .hero__subtitle {
+    .hero__role {
       opacity: 1;
       transform: none;
     }
@@ -292,14 +359,90 @@ const greetings = [
       opacity: 1;
       position: static;
     }
+
+    /* Typing is skipped entirely under reduced motion (see the script
+       below) — just the static first role stays put, cursor included. */
+    .hero__role-cursor {
+      animation: none;
+      opacity: 0;
+    }
   }
 </style>
 
 <script>
   import { heroEntrance, heroRecede } from "../scripts/motion.js";
+  import site from "../data/site.json";
 
   const heroSection = document.querySelector(".hero");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const typedEl = heroSection.querySelector("[data-hero-role-typed]");
 
-  heroEntrance(heroSection);
   heroRecede(heroSection);
+
+  // Hold the entrance (and the typewriter effect below) until Loader.astro
+  // signals it's dissolving, instead of playing immediately on script load
+  // — otherwise the whole entrance finishes underneath the opaque loader
+  // and removing it just reveals an already-static page, which is the gap
+  // this is closing. Reduced motion skips the loader animation entirely,
+  // so start right away in that case (must happen after typedEl above is
+  // initialized, since this can fire synchronously); the 2s fallback
+  // covers the loader markup ever failing to fire the event for some
+  // other reason.
+  let started = false;
+  function startHeroSequence() {
+    if (started) return;
+    started = true;
+    heroEntrance(heroSection);
+    startTypewriter();
+  }
+
+  if (prefersReducedMotion) {
+    startHeroSequence();
+  } else {
+    window.addEventListener("site:ready", startHeroSequence, { once: true });
+    setTimeout(startHeroSequence, 2000);
+  }
+
+  function startTypewriter() {
+    if (!typedEl || prefersReducedMotion) return;
+
+    const roles = site.roles;
+    const TYPE_MS = 45;
+    const DELETE_MS = 28;
+    const HOLD_MS = 1600;
+    const PAUSE_MS = 400;
+
+    let roleIndex = 0;
+    let charCount = 0;
+    let deleting = false;
+
+    typedEl.textContent = "";
+
+    function tick() {
+      const word = roles[roleIndex];
+
+      if (!deleting) {
+        charCount++;
+        typedEl.textContent = word.slice(0, charCount);
+        if (charCount === word.length) {
+          deleting = true;
+          setTimeout(tick, HOLD_MS);
+          return;
+        }
+        setTimeout(tick, TYPE_MS);
+      } else {
+        charCount--;
+        typedEl.textContent = word.slice(0, charCount);
+        if (charCount === 0) {
+          deleting = false;
+          roleIndex = (roleIndex + 1) % roles.length;
+          setTimeout(tick, PAUSE_MS);
+          return;
+        }
+        setTimeout(tick, DELETE_MS);
+      }
+    }
+
+    setTimeout(tick, TYPE_MS);
+  }
 </script>

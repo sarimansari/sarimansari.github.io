@@ -4,11 +4,33 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// Inertial smooth scroll (Lenis), synced to GSAP's ticker so ScrollTrigger
+// stays in lockstep with it — the standard Lenis+GSAP integration. Skipped
+// entirely under reduced motion: the whole point of Lenis is added motion
+// (scroll momentum/easing), which is exactly what that preference asks to
+// avoid, so native instant scroll is the correct fallback, not a bug.
+export function initSmoothScroll() {
+  if (prefersReducedMotion()) return;
+
+  const lenis = new Lenis({
+    duration: 1.1,
+    easing: (t) => 1 - Math.pow(1 - t, 3),
+  });
+
+  lenis.on("scroll", ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
 }
 
 // Hero entrance sequence (Section 6/10): greeting/wave -> name (word stagger)
@@ -57,6 +79,65 @@ export function heroRecede(heroEl) {
       end: "bottom top",
       scrub: true,
     },
+  });
+}
+
+// Depth-on-scroll for every content section (About/Skills/Experience/
+// Contact) — extends the same recede-as-you-scroll-past treatment Hero
+// already applies to itself (heroRecede, below) to the rest of the page,
+// via a shared `data-recede` attribute on each <section>, so section
+// transitions read as one continuous layered motion instead of Hero being
+// the only part of the page with any scroll-scrubbed depth.
+export function initSectionRecede() {
+  if (prefersReducedMotion()) return;
+
+  const sections = document.querySelectorAll("[data-recede]");
+  sections.forEach((section) => {
+    const inner = section.firstElementChild;
+    if (!inner) return;
+
+    gsap.to(inner, {
+      opacity: 0.35,
+      scale: 0.97,
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+  });
+}
+
+// Signature word-mask reveal for section headings (SplitHeading.astro),
+// extending the exact technique Hero's name already uses so every heading
+// on the site shares that same "words rise out of a hidden mask" motion
+// instead of the flat fade the rest of the page content uses. CSS hides
+// the words synchronously (see base.css) so this only needs to animate
+// them back in, not set up the hidden state itself.
+export function initHeadingReveals() {
+  if (prefersReducedMotion()) return;
+
+  const headings = document.querySelectorAll("[data-reveal-heading]");
+  headings.forEach((heading) => {
+    const words = heading.querySelectorAll(".split-heading__word");
+    if (!words.length) return;
+
+    ScrollTrigger.create({
+      trigger: heading,
+      start: "top 85%",
+      once: true,
+      onEnter: () => {
+        gsap.to(words, {
+          opacity: 1,
+          y: "0%",
+          duration: 0.8,
+          ease: "power4.out",
+          stagger: 0.06,
+        });
+      },
+    });
   });
 }
 

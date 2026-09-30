@@ -1,11 +1,18 @@
 {
   "name": "Sarim Ansari",
-  "subtitle": "Software Engineer — Agentic AI & Distributed Systems",
+  "subtitle": "Software Engineer & GenAI Engineer",
   "location": "Mumbai, India",
-  "tagline": "Crafting AI-powered platforms that think, scale, and evolve.",
-  "bio": "Senior Software Engineer with 8+ years of experience building scalable systems, now focused on GenAI and intelligent platforms.",
+  "roles": [
+    "a software engineer",
+    "a full-stack developer",
+    "a GenAI engineer",
+    "a platform architect"
+  ],
+  "tagline": "8+ years of experience building backend systems, based out of mumbai.",
+  "bio": "mostly Java and Spring, plus the usual distributed-systems stuff. more recently, agentic AI: RAG pipelines, LLM tooling. different problems, same way of thinking about them.",
   "email": "ansarisarim55@gmail.com",
   "github": "https://github.com/sarimansari",
   "linkedin": "https://www.linkedin.com/in/sarimansari/",
+  "instagram": "https://www.instagram.com/isarimansari/",
   "availability": null
 }

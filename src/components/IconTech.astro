@@ -60,7 +60,14 @@ if (slug) {
   const svgPath = path.join(logosDir, `${slug}.svg`);
   const pngPath = path.join(logosDir, `${slug}.png`);
   if (fs.existsSync(svgPath)) {
-    svg = fs.readFileSync(svgPath, "utf-8").replace("<svg ", '<svg fill="currentColor" ');
+    // Company wordmarks vary wildly in natural aspect ratio (Morgan Stanley
+    // ~7:1, Infosys ~2.6:1) — left-aligning instead of the SVG default
+    // center ("xMidYMid") keeps every logo flush against the same left
+    // edge inside the shared fixed-size box (.icon-tech--company below),
+    // so narrower logos don't end up visually indented compared to wider
+    // ones that fill the box.
+    const svgAttrs = kind === "company" ? 'fill="currentColor" preserveAspectRatio="xMinYMid meet" ' : 'fill="currentColor" ';
+    svg = fs.readFileSync(svgPath, "utf-8").replace("<svg ", `<svg ${svgAttrs}`);
   } else if (fs.existsSync(pngPath)) {
     const buf = fs.readFileSync(pngPath);
     pngDataUri = `data:image/png;base64,${buf.toString("base64")}`;
@@ -113,17 +120,23 @@ const pngStyle = pngDataUri
     height: 100%;
   }
 
-  /* Company logos are wordmarks (wide, not square) — size by height only
-     and let width follow the source aspect ratio. No max-width here: capping
-     width while height is fixed would squish the aspect ratio, and with no
-     sibling text next to it anymore there's nothing it needs to make room for. */
+  /* Company logos are wordmarks with wildly different natural aspect ratios
+     (Morgan Stanley ~7:1, Accolite ~4.8:1, Infosys ~2.6:1) — sizing by
+     height only (the old approach) let each one claim whatever width its
+     own ratio demanded, so they ended up reading as very different sizes
+     next to each other (Morgan Stanley ~7x wider than Infosys). A shared
+     fixed box with contain-style fitting keeps every logo's footprint
+     consistent instead: each scales down to fit within the same box,
+     left-aligned (see preserveAspectRatio / mask-position below) so they
+     all start at the same left edge regardless of how much of the box
+     their own ratio actually fills. */
   .icon-tech--company {
-    width: auto;
+    width: 200px;
     height: 32px;
   }
 
   .icon-tech--company :global(svg) {
-    width: auto;
+    width: 100%;
     height: 100%;
   }
 
@@ -135,6 +148,14 @@ const pngStyle = pngDataUri
     mask-size: contain;
     mask-repeat: no-repeat;
     mask-position: center;
+  }
+
+  /* Left-align within the shared box (see .icon-tech--company above) to
+     match the SVG logos' preserveAspectRatio="xMinYMid" instead of the
+     default centered mask-position. */
+  .icon-tech--company.icon-tech--masked {
+    -webkit-mask-position: left center;
+    mask-position: left center;
   }
 
   .icon-tech--monogram {

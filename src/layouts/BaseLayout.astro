@@ -1,5 +1,6 @@
 ---
 import GrainOverlay from "../components/GrainOverlay.astro";
+import Loader from "../components/Loader.astro";
 import ScrollProgress from "../components/ScrollProgress.astro";
 import site from "../data/site.json";
 import "../styles/tokens.css";
@@ -52,13 +53,17 @@ const ogImageURL = new URL("/og-image.png", Astro.site);
       rather than self-hosted subsets as Section 27 originally specified —
       a pragmatic call to avoid depending on locally-sourced font binaries;
       performance impact is minimal with preconnect + swap, but flagging the
-      deviation from the plan.
+      deviation from the plan. Fraunces stays loaded even though Recoleta
+      (self-hosted, see base.css) is now --font-display's first choice — it's
+      the fallback in that stack if Recoleta's file ever fails to load, and
+      the only face with the italic/500-weight variants Recoleta's demo
+      build doesn't have.
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
 
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -72,6 +77,7 @@ const ogImageURL = new URL("/og-image.png", Astro.site);
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
+    <Loader />
     <GrainOverlay />
     <ScrollProgress />
     <main id="main">
@@ -79,8 +85,17 @@ const ogImageURL = new URL("/og-image.png", Astro.site);
     </main>
 
     <script>
-      import { initScrollReveals } from "../scripts/motion.js";
+      import {
+        initScrollReveals,
+        initHeadingReveals,
+        initSectionRecede,
+        initSmoothScroll,
+      } from "../scripts/motion.js";
+
+      initSmoothScroll();
       initScrollReveals();
+      initHeadingReveals();
+      initSectionRecede();
     </script>
   </body>
 </html>

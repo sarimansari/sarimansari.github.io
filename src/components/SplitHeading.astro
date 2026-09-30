@@ -1,0 +1,35 @@
+---
+// Reusable word-mask reveal for section headings — the same "words rise
+// out of a hidden mask" technique Hero.astro already uses for the name
+// (.hero__word-wrap / .hero__word), extended here so every section heading
+// shares that signature motion instead of the generic flat fade the rest
+// of the page content uses. Animated by initHeadingReveals() in motion.js,
+// scroll-triggered once per heading. Shared CSS lives in base.css
+// (.split-heading__wrap / __word) since this is a cross-component pattern
+// now, not a single section's concern.
+interface Props {
+  text: string;
+  tag?: "h1" | "h2" | "h3";
+  class?: string;
+}
+
+const { text, tag: Tag = "h2", class: className } = Astro.props;
+const words = text.split(" ");
+---
+
+<Tag class={["split-heading", className].filter(Boolean).join(" ")} data-reveal-heading>
+  {words.map((word, i) => (
+    <span class="split-heading__wrap">
+      <span class="split-heading__word">{word}{i < words.length - 1 ? " " : ""}</span>
+    </span>
+  ))}
+</Tag>
+
+<style>
+  .split-heading {
+    /* Every section heading used this same value already (see the git
+       history on About/Skills/Experience/Contact's own heading rules) —
+       centralized here now that they all render through this component. */
+    margin: 0 0 var(--space-8);
+  }
+</style>
