@@ -32,4 +32,13 @@ const words = text.split(" ");
        centralized here now that they all render through this component. */
     margin: 0 0 var(--space-8);
   }
+
+  @media (max-height: 700px) {
+    /* A short phone screen (e.g. iPhone SE) needs every bit of vertical
+       space it can get back — this trims the same heading gap across
+       every section that uses it, not just the content-heavy ones. */
+    .split-heading {
+      margin-bottom: var(--space-4);
+    }
+  }
 </style>

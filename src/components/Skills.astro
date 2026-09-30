@@ -53,8 +53,13 @@ const groups = [
   .skills {
     /* min-height + centering shared with every other content section (see
        Hero.astro / AboutMe.astro) so section heights read as consistent
-       instead of purely content-driven. */
+       instead of purely content-driven. 100dvh after 100vh (unsupported
+       browsers just keep the 100vh rule) tracks Safari's collapsing
+       address bar instead of the larger static viewport, which matters
+       here because this section is one of the two most likely to overflow
+       one screen on a phone. */
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -62,6 +67,30 @@ const groups = [
     /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  @media (max-width: 767px) {
+    .skills {
+      /* Three stacked groups (heading + statement + tags each) plus the
+         original space-24 padding routinely ran taller than one phone
+         screen, so the mandatory snap landed at the top but left content
+         below the fold — reaching it, then the next section, took an
+         extra manual scroll. Tighter padding and top-alignment (instead
+         of vertical centering, which only makes overflow worse) gets all
+         three groups to fit in one view on most phones. */
+      padding: var(--space-12) var(--space-4);
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .skills {
+      /* Overflow here is a height problem, not a width one — a short
+         phone (e.g. iPhone SE at 667px tall) still ran past one screen
+         even after the max-width trim above. Targets short viewports
+         specifically, independent of how wide they are. */
+      padding: var(--space-8) var(--space-4);
+    }
   }
 
   @media (min-width: 1024px) {
@@ -91,6 +120,21 @@ const groups = [
     gap: var(--space-8);
   }
 
+  @media (max-width: 767px) {
+    .skills__groups {
+      /* See .skills's mobile media query — trimmed further so all 3
+         groups fit one phone screen. */
+      gap: var(--space-6);
+    }
+  }
+
+  @media (max-height: 700px) {
+    .skills__groups {
+      /* See .skills's height-based media query above. */
+      gap: var(--space-4);
+    }
+  }
+
   @media (min-width: 768px) {
     .skills__groups {
       grid-template-columns: repeat(2, 1fr);
@@ -109,6 +153,12 @@ const groups = [
     transition: opacity 150ms ease;
   }
 
+  @media (max-height: 700px) {
+    .skills__group {
+      padding-top: var(--space-2);
+    }
+  }
+
   .skills__group-name {
     /* Opts out of the global h1/h2/h3 lowercase rule (see base.css) —
        "AI & GenAI" needs to render exactly as authored above, and the
@@ -122,6 +172,15 @@ const groups = [
        About's bio (same "supporting sentence under a heading" role). */
     color: var(--color-text-muted);
     margin-bottom: var(--space-2);
+  }
+
+  @media (max-height: 700px) {
+    .skills__group-statement {
+      /* Same reasoning as Where I've Worked's summary trim — body text is
+         the biggest recoverable chunk of height on a short screen. */
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
   }
 
   .skills__tags {

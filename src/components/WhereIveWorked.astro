@@ -52,8 +52,13 @@ import experience from "../data/experience.json";
   .experience {
     /* min-height + centering shared with every other content section (see
        Hero.astro / AboutMe.astro) so section heights read as consistent
-       instead of purely content-driven. */
+       instead of purely content-driven. 100dvh after 100vh (unsupported
+       browsers just keep the 100vh rule) tracks Safari's collapsing
+       address bar instead of the larger static viewport, which matters
+       here because this section is the one most likely to overflow one
+       screen on a phone. */
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -61,6 +66,31 @@ import experience from "../data/experience.json";
     /* Page-by-page scroll (see html's scroll-snap-type in base.css). */
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  @media (max-width: 767px) {
+    .experience {
+      /* Three timeline entries (dates + summary each) plus the original
+         space-24 padding routinely ran taller than one phone screen, so
+         the mandatory snap landed at the section's top but left content
+         below the fold — reaching it, then the next section, took an
+         extra manual scroll. Tighter padding and top-alignment (instead
+         of vertical centering, which only makes overflow worse) gets the
+         whole entry list to fit in one view on most phones. */
+      padding: var(--space-12) var(--space-4);
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .experience {
+      /* Overflow here is a height problem, not a width one — a short
+         phone (e.g. iPhone SE at 667px tall) still ran past one screen
+         even after the max-width trim above, cutting off the last entry.
+         Targets short viewports specifically, independent of how wide
+         they are. */
+      padding: var(--space-8) var(--space-4);
+    }
   }
 
   @media (min-width: 1024px) {
@@ -136,6 +166,35 @@ import experience from "../data/experience.json";
 
   .timeline__entry:last-child {
     padding-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    .timeline__entry {
+      /* Tighter than desktop's space-16 — see .experience's mobile media
+         query above for why: three entries need to fit one phone screen. */
+      padding-bottom: var(--space-8);
+    }
+  }
+
+  @media (max-height: 700px) {
+    .timeline__entry {
+      /* See .experience's height-based media query above. */
+      padding-bottom: var(--space-4);
+    }
+
+    .timeline__header {
+      margin-bottom: var(--space-2);
+    }
+
+    .timeline__summary {
+      margin-bottom: var(--space-2);
+      /* Body text is the biggest chunk of this section's height (3
+         multi-line summaries) — a modest reduction here recovers more
+         vertical space than any of the spacing trims above on a short
+         screen. */
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
   }
 
   .timeline__marker {

@@ -135,6 +135,16 @@ const pngStyle = pngDataUri
     height: 32px;
   }
 
+  @media (max-height: 700px) {
+    /* Where I've Worked stacks 3 of these on a short phone screen (e.g.
+       iPhone SE) — shrinking the shared box helps that section fit one
+       viewport without a follow-up scroll. */
+    .icon-tech--company {
+      width: 150px;
+      height: 24px;
+    }
+  }
+
   .icon-tech--company :global(svg) {
     width: 100%;
     height: 100%;

@@ -37,6 +37,9 @@ html {
 
 img {
   -webkit-user-drag: none;
+  /* -webkit-user-drag only blocks desktop drag — iOS Safari's long-press
+     "drag image out" / save-image callout is a separate mechanism. */
+  -webkit-touch-callout: none;
 }
 
 html,
